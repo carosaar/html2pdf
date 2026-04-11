@@ -1,0 +1,22 @@
+[project]
+name = "html2pdf"
+dynamic = ["version"]
+description = "GUI- und CLI-Tool zur HTML-zu-PDF-Konvertierung mit wkhtmltopdf"
+authors = [
+    { name = "Dieter Eckstein", email = "carosaar@online.de" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "html2pdf.version.__version__"}
+
+[project.scripts]
+html2pdf = "html2pdf.main:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

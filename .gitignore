@@ -1,0 +1,57 @@
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Virtual Environments
+venv/
+.env/
+.venv/
+env/
+
+# Installer / PyInstaller
+*.spec
+installer/
+output/
+html2pdf.exe
+html2pdf/*.exe
+
+# Logs
+*.log
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.old
+
+# Project-specific
+# (falls du später weitere statische Assets ignorieren willst)
+src/html2pdf/docs/*.pdf
+src/html2pdf/docs/*.html
+Testdata/*
+devdoc/*
+
+# Tests / Coverage
+.coverage
+htmlcov/
+.cache/
+pytest_cache/
