@@ -7,6 +7,7 @@ import itertools
 import threading
 import sys
 import time
+from pathlib import Path
 
 from html2pdf.core.file_utils import resolve_input_path, build_output_path
 from html2pdf.core.converter import convert_single_html
@@ -52,6 +53,11 @@ def run_cli():
     files = resolve_input_path(args.input)
     if not files:
         raise SystemExit("Keine HTML-Dateien gefunden.")
+
+    if len(files) > 1 and args.output and Path(args.output).suffix.lower() == ".pdf":
+        raise SystemExit(
+            "Bei mehreren Eingabedateien muss --output ein Verzeichnis sein, nicht eine einzelne PDF-Datei."
+        )
 
     total = len(files)
 

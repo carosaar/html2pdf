@@ -49,6 +49,7 @@ src/html2pdf/docs/*.pdf
 src/html2pdf/docs/*.html
 Testdata/*
 devdoc/*
+*.txt
 
 # Tests / Coverage
 .coverage

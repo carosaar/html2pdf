@@ -25,10 +25,17 @@ def resolve_input_path(path_str):
 def build_output_path(input_file, output_folder=None):
     """
     Erzeugt den PDF-Ausgabepfad aus der HTML-Datei.
+
+    Wenn `output_folder` eine vorhandene oder neue PDF-Datei ist und nur eine
+    einzelne HTML-Datei verarbeitet wird, wird dieser Dateiname direkt verwendet.
+    Ansonsten wird davon ausgegangen, dass `output_folder` ein Verzeichnis ist.
     """
     if output_folder:
-        out_dir = Path(output_folder)
-    else:
-        out_dir = input_file.parent
+        out_path = Path(output_folder)
 
-    return out_dir / (input_file.stem + ".pdf")
+        if out_path.suffix.lower() == ".pdf":
+            return out_path
+
+        return out_path / (input_file.stem + ".pdf")
+
+    return input_file.parent / (input_file.stem + ".pdf")

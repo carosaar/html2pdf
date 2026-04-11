@@ -5,6 +5,25 @@ Alle Änderungen an diesem Projekt werden in diesem Dokument festgehalten.
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
+## [0.2.2] - 2026-04-11
+
+### Behoben
+
+CLI-Parameter `--output` wurde immer als **Zielverzeichnis** interpretiert.
+**Ursache**: Bei einem einzelnen HTML-Eingabepfad wie 
+
+```
+html2pdf.exe --input .\input.html --output .\Ausgabe.pdf
+``` 
+
+wurde intern versucht, in Ausgabe.pdf\input.pdf zu schreiben.
+
+**Fix**:
+>`build_output_path()` erkennt jetzt, wenn `--output` eine einzelne .pdf-Datei ist, und verwendet diesen Pfad direkt.
+Bei mehreren Eingabedateien führt `--output` als einzelne PDF-Datei jetzt zu einer klaren Fehlermeldung.
+
+**Ergebnis**: 
+>CLI-Aufrufe mit explizitem PDF-Ziel funktionieren jetzt korrekt, ohne dass wkhtmltopdf wegen eines ungültigen Ausgabepfads abbricht.
 
 ## [0.2.1] – 2026‑04‑11
 
