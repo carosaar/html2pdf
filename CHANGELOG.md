@@ -25,6 +25,9 @@ Bei mehreren Eingabedateien führt `--output` als einzelne PDF-Datei jetzt zu ei
 **Ergebnis**: 
 >CLI-Aufrufe mit explizitem PDF-Ziel funktionieren jetzt korrekt, ohne dass wkhtmltopdf wegen eines ungültigen Ausgabepfads abbricht.
 
+**Hinweis**:
+>Für den PyInstaller-Build wurde außerdem ein Runtime-Hook (`pyi_rth_attach_console.py`) eingeführt. Dieser sorgt dafür, dass die gebaute EXE bei normalem Start ohne Argumente als GUI startet, aber bei CLI-Argumenten eine Konsole öffnet und UTF-8-Ausgabe unterstützt.
+
 ## [0.2.1] – 2026‑04‑11
 
 ### Hinzugefügt
