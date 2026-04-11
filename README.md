@@ -149,8 +149,27 @@ pytest
 
 ## 📄 Lizenz
 
-Dieses Projekt steht unter der **MIT‑Lizenz**.  
-Siehe Datei `LICENSE`.
+html2pdf steht unter der MIT-Lizenz (siehe LICENSE).
+
+Dieses Projekt verwendet zusätzlich die Software **wkhtmltopdf**, die unter der
+GNU Lesser General Public License Version 3 (LGPL‑3.0) veröffentlicht wird.
+
+**wkhtmltopdf** wird nicht verändert, sondern lediglich als externes Programm aufgerufen.
+Gemäß den Bedingungen der LGPL‑3.0 darf wkhtmltopdf in proprietären oder MIT‑lizenzierten Projekten verwendet werden, solange:
+
+* ein Hinweis auf die Nutzung erfolgt
+* die Lizenzbedingungen der LGPL‑3.0 beigefügt werden
+* Änderungen an wkhtmltopdf (falls vorhanden) offengelegt würden
+(html2pdf nimmt keine Änderungen vor)
+
+Weitere Informationen zu wkhtmltopdf:
+https://github.com/wkhtmltopdf/wkhtmltopdf 
+
+Die vollständigen Lizenztexte befinden sich in:
+
+LICENSE (MIT-Lizenz für html2pdf)
+
+LICENSES/wkhtmltopdf-LGPL-3.0.txt (LGPL‑3.0 für wkhtmltopdf)
 
 ---
 
