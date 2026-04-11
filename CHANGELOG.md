@@ -4,6 +4,38 @@ Alle Änderungen an diesem Projekt werden in diesem Dokument festgehalten.
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
+## [0.2.0] – 2026‑04‑11
+### Hinzugefügt
+- Vollständig überarbeitete GUI mit funktionaler Gleichstellung zur CLI.
+- Tabellenansicht (ttk.Treeview) mit Spalten:
+  - HTML‑Datei
+  - HTML‑Ordner (relativ zu Arbeitsordner, beginnend mit .\)
+  - PDF‑Datei
+  - PDF‑Ordner
+  - Status (Bereit, In Arbeit…, Fertig ✔, Fehler)
+- Anzeige des aktuellen Arbeitsordners über der Tabelle.
+- Unterstützung für Drag & Drop (optional, wenn tkinterdnd2 verfügbar ist).
+- Doppelklick auf Tabellenzeile entfernt die Datei aus der Liste.
+- Auswahl eines Ausgabeordners mit dynamischer Aktualisierung der PDF‑Pfade.
+- Fortschrittsanzeige mit ruhiger Indeterminate‑Animation (Geschwindigkeit über Variable SPINNER_SPEED einstellbar).
+- Statuszeile mit Fortschrittszähler (z. B. „Konvertiere (3/12): index.html“).
+- Unicode‑Icons für alle Buttons (📥, 🗂️, ❌, ℹ️, 🔄).
+- Auffälliger „Konvertieren“-Button (größer, fett, eigener Style).
+- Einbindung des App‑Icons `html2pdf.ico`.
+
+### Geändert
+- Konvertierungslogik der GUI vollständig auf die Core‑Funktionen abgestimmt.
+- Threading überarbeitet: GUI bleibt während der gesamten Konvertierung reaktionsfähig.
+- Fehlerdialoge verbessert (inkl. erster Fehlermeldung aus stderr).
+- Pfadanzeige überarbeitet: relative Pfade nur innerhalb des Arbeitsordners, sonst absolute Pfade.
+
+### Behoben
+- Fehler bei Drag & Drop, wenn tkinterdnd2 installiert, aber nicht korrekt initialisiert war (TkinterDnD.Tk wird nun sicher verwendet).
+- Animation wurde zuvor nur bei der ersten Datei angezeigt – läuft jetzt durchgehend.
+
+### Hinweise
+- Protokollierung weiterhin über CLI verfügbar (`--log`).
+
 ---
 
 ## [0.1.0] – 2026-04-11
