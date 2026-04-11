@@ -1,5 +1,5 @@
 """
-GUI-Frontend (Tkinter) – Version 0.2.0
+GUI-Frontend (Tkinter) – Version 0.2.1
 """
 
 import threading
@@ -17,7 +17,7 @@ from html2pdf.version import __version__
 # ---------------------------------------------------------
 # Konfiguration
 # ---------------------------------------------------------
-SPINNER_SPEED = 600  # ms – Animationstempo (höher = ruhiger)
+SPINNER_SPEED = 150  # ms – Animationstempo (höher = ruhiger)
 
 
 # ---------------------------------------------------------
@@ -37,19 +37,17 @@ def try_enable_drag_and_drop(widget, on_drop_callback):
 # GUI Hauptfunktion
 # ---------------------------------------------------------
 def run_gui():
-    # ---------------------------------------------------------
     # TkinterDnD sicher initialisieren
-    # ---------------------------------------------------------
     try:
         import tkinterdnd2 as tkdnd
-        app = tkdnd.TkinterDnD.Tk()   # WICHTIG: richtige Tk-Klasse
+        app = tkdnd.TkinterDnD.Tk()
         DND_AVAILABLE = True
     except Exception:
         app = tk.Tk()
         DND_AVAILABLE = False
 
     app.title(f"HTML → PDF Converter (v{__version__})")
-    app.geometry("800x600")
+    app.geometry("900x650")
 
     # App-Icon einbinden
     try:
@@ -72,16 +70,12 @@ def run_gui():
 
     files: list[dict] = []  # {"html": Path, "pdf": Path, "status": str}
     output_folder = tk.StringVar(value="")
+    cancel_requested = False  # Abbruch-Flag
 
     # -----------------------------------------------------
     # Hilfsfunktionen
     # -----------------------------------------------------
     def make_relative(path: Path) -> str:
-        """
-        Gibt einen relativen Pfad zurück, wenn möglich.
-        Beginnt immer mit .\  (z. B. .\sub\ordner)
-        Wenn außerhalb des Arbeitsordners → absoluter Pfad.
-        """
         try:
             rel = path.relative_to(current_root)
             rel_str = str(rel)
@@ -144,6 +138,10 @@ def run_gui():
                 del files[idx]
         refresh_tree()
 
+    def clear_list():
+        files.clear()
+        refresh_tree()
+
     def on_tree_double_click(event):
         item = tree.identify_row(event.y)
         if not item:
@@ -152,7 +150,6 @@ def run_gui():
         if 0 <= idx < len(files):
             del files[idx]
             refresh_tree()
-
 
     def choose_output_folder():
         folder = filedialog.askdirectory()
@@ -176,10 +173,24 @@ def run_gui():
         )
         messagebox.showinfo("Information", msg)
 
+    def request_cancel():
+        nonlocal cancel_requested
+        cancel_requested = True
+        status_var.set("Abbruch angefordert…")
+
+    def request_exit():
+        if convert_button["state"] == "disabled":
+            messagebox.showwarning("Hinweis", "Bitte zuerst die Konvertierung abbrechen.")
+            return
+        app.destroy()
+
     # -----------------------------------------------------
     # Konvertierung
     # -----------------------------------------------------
     def start_conversion():
+        nonlocal cancel_requested
+        cancel_requested = False
+
         try:
             ensure_wkhtmltopdf_or_raise()
         except Exception as e:
@@ -195,48 +206,59 @@ def run_gui():
         progress.config(mode="indeterminate")
         progress.start(SPINNER_SPEED)
 
-        status_var.set("Konvertierung läuft...")
+        status_var.set("Konvertierung läuft…")
         convert_button.config(state="disabled")
+        cancel_button.config(state="normal")
 
         def worker():
             total = len(files)
             for idx, entry in enumerate(files):
+
+                if cancel_requested:
+                    entry["status"] = "Abgebrochen"
+                    app.after_idle(refresh_tree)
+                    break
+
                 html_path: Path = entry["html"]
                 pdf_path: Path = entry["pdf"]
 
-                entry["status"] = "In Arbeit..."
-                app.after(
-                    0,
-                    lambda i=idx, h=html_path: (
-                        status_var.set(f"Konvertiere ({i+1}/{total}): {h.name}"),
-                        refresh_tree(),
-                    ),
-                )
+                entry["status"] = "In Arbeit…"
+                app.after_idle(refresh_tree)
 
                 code, stdout, stderr = convert_single_html(html_path, pdf_path)
+
+                if cancel_requested:
+                    entry["status"] = "Abgebrochen"
+                    app.after_idle(refresh_tree)
+                    break
 
                 if code != 0:
                     first_line = stderr.splitlines()[0] if stderr else "Unbekannter Fehler"
                     entry["status"] = f"Fehler: {first_line}"
-                    app.after(
-                        0,
-                        lambda p=html_path, s=stderr: messagebox.showerror(
-                            "Fehler",
-                            f"Fehler bei {p.name}:\n{s or 'Unbekannter Fehler'}",
-                        ),
-                    )
                 else:
                     entry["status"] = "Fertig ✔"
 
-                app.after(0, refresh_tree)
+                if idx % 20 == 0:
+                    app.after_idle(refresh_tree)
+
+                if idx % 10 == 0:
+                    app.after_idle(lambda i=idx: status_var.set(f"Verarbeitet: {i+1}/{total}"))
 
             def finish():
                 progress.stop()
                 progress.config(mode="determinate")
                 progress["value"] = progress["maximum"]
-                status_var.set("Alle Dateien verarbeitet.")
+
+                if cancel_requested:
+                    status_var.set("Konvertierung abgebrochen.")
+                    app.bell()
+                    messagebox.showinfo("Abgebrochen", "Die Konvertierung wurde abgebrochen.")
+                else:
+                    status_var.set("Alle Dateien verarbeitet.")
+
                 convert_button.config(state="normal")
-                messagebox.showinfo("Fertig", "Konvertierung abgeschlossen.")
+                cancel_button.config(state="disabled")
+                refresh_tree()
 
             app.after(0, finish)
 
@@ -248,7 +270,6 @@ def run_gui():
     main_frame = ttk.Frame(app, padding=10)
     main_frame.pack(fill="both", expand=True)
 
-    # Arbeitsordner anzeigen
     root_label = ttk.Label(
         main_frame,
         text=f"Aktueller Arbeitsordner: {current_root}",
@@ -260,38 +281,27 @@ def run_gui():
     top_frame = ttk.Frame(main_frame)
     top_frame.pack(fill="x")
 
-    ttk.Button(
-        top_frame,
-        text="📥 HTML-Dateien hinzufügen",
-        command=add_files_dialog,
-    ).pack(side="left")
+    ttk.Button(top_frame, text="📥 HTML-Dateien hinzufügen", command=add_files_dialog).pack(side="left")
+    ttk.Button(top_frame, text="🗂️ Ausgabeordner wählen", command=choose_output_folder).pack(side="left", padx=(5, 0))
+    ttk.Button(top_frame, text="❌ Ausgewählte entfernen", command=remove_selected).pack(side="left", padx=(5, 0))
+    ttk.Button(top_frame, text="🗑️ Liste leeren", command=clear_list).pack(side="left", padx=(5, 0))
 
-    ttk.Button(
-        top_frame,
-        text="🗂️ Ausgabeordner wählen",
-        command=choose_output_folder,
-    ).pack(side="left", padx=(5, 0))
+    ttk.Button(top_frame, text="Beenden", command=request_exit).pack(side="right")
+    ttk.Button(top_frame, text="ℹ️ INFO", command=show_info).pack(side="right", padx=(0, 5))
 
-    ttk.Button(
-        top_frame,
-        text="❌ Ausgewählte entfernen",
-        command=remove_selected,
-    ).pack(side="left", padx=(5, 0))
+    # Tabelle + Scrollbar (Scrollbalken zuerst packen!)
+    table_frame = ttk.Frame(main_frame)
+    table_frame.pack(fill="both", expand=True, pady=10)
 
-    ttk.Button(
-        top_frame,
-        text="ℹ️ INFO",
-        command=show_info,
-    ).pack(side="right")
-
-    # Tabelle
     columns = ("html_name", "html_dir", "pdf_name", "pdf_dir", "status")
     tree = ttk.Treeview(
-        main_frame,
+        table_frame,
         columns=columns,
         show="headings",
         selectmode="extended",
+        height=18,
     )
+
     tree.heading("html_name", text="HTML-Datei")
     tree.heading("html_dir", text="HTML-Ordner")
     tree.heading("pdf_name", text="PDF-Datei")
@@ -304,13 +314,17 @@ def run_gui():
     tree.column("pdf_dir", width=200, anchor="w")
     tree.column("status", width=220, anchor="w")
 
-    tree.pack(fill="both", expand=True, pady=10)
-    tree.bind("<Double-1>", on_tree_double_click)
+    scrollbar = ttk.Scrollbar(table_frame, orient="vertical", command=tree.yview)
+    tree.configure(yscrollcommand=scrollbar.set)
 
+    # WICHTIG: Scrollbar zuerst packen, dann Treeview
+    scrollbar.pack(side="right", fill="y")
+    tree.pack(side="left", fill="both", expand=True)
+
+    tree.bind("<Double-1>", on_tree_double_click)
 
     if DND_AVAILABLE:
         try_enable_drag_and_drop(tree, add_files_from_paths)
-
 
     total_label = ttk.Label(main_frame, text="Gesamt: 0 Datei(en)")
     total_label.pack(anchor="w")
@@ -321,12 +335,24 @@ def run_gui():
     status_var = tk.StringVar(value="Bereit.")
     ttk.Label(main_frame, textvariable=status_var).pack(anchor="w")
 
+    # Untere Leiste
+    bottom_frame = ttk.Frame(main_frame)
+    bottom_frame.pack(fill="x", pady=(10, 0))
+
     convert_button = ttk.Button(
-        main_frame,
+        bottom_frame,
         text="🔄 Konvertieren",
         command=start_conversion,
         style="Convert.TButton",
     )
-    convert_button.pack(pady=10)
+    convert_button.pack(side="left")
+
+    cancel_button = ttk.Button(
+        bottom_frame,
+        text="⛔ Abbrechen",
+        command=request_cancel,
+        state="disabled",
+    )
+    cancel_button.pack(side="left", padx=(10, 0))
 
     app.mainloop()

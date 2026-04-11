@@ -1,11 +1,38 @@
 # Changelog
+
 Alle Änderungen an diesem Projekt werden in diesem Dokument festgehalten.
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
-## [0.2.0] – 2026‑04‑11
+
+## [0.2.1] – 2026‑04‑11
+
 ### Hinzugefügt
+
+- Beenden‑Button in der oberen Buttonleiste (schließt die Anwendung, wenn keine Konvertierung läuft).
+- Abbrechen‑Button in der unteren Leiste, um eine laufende Konvertierung kontrolliert zu stoppen.
+- Button und Funktion `Liste leeren` in der oberen Buttleiste entfernt alle Dateieinträge in der Tabelle
+- Thread‑Stop‑Mechanismus (`cancel_requested`) zur sicheren Unterbrechung großer Konvertierungsjobs.
+- Vertikaler Scrollbalken in der Dateiliste
+
+### Geändert
+
+- Fortschritts- und Statusaktualisierung gedrosselt, um Überlastung der GUI‑Eventqueue bei sehr vielen Dateien zu verhindern.
+- Statusmeldungen werden nun nur noch bei relevanten Änderungen aktualisiert.
+- Indeterminate‑Animation läuft stabil bis zum tatsächlichen Ende oder Abbruch der Konvertierung.
+
+### Behoben
+
+- Problem, bei dem die GUI während großer Konvertierungsjobs (z. B. 14.000 Dateien) nicht mehr bedienbar war.
+- Problem, bei dem Statusmeldungen zu früh „Fertig“ anzeigten, obwohl die Konvertierung noch lief.
+
+---
+
+## [0.2.0] – 2026‑04‑11
+
+### Hinzugefügt
+
 - Vollständig überarbeitete GUI mit funktionaler Gleichstellung zur CLI.
 - Tabellenansicht (ttk.Treeview) mit Spalten:
   - HTML‑Datei
@@ -24,22 +51,27 @@ und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikati
 - Einbindung des App‑Icons `html2pdf.ico`.
 
 ### Geändert
+
 - Konvertierungslogik der GUI vollständig auf die Core‑Funktionen abgestimmt.
 - Threading überarbeitet: GUI bleibt während der gesamten Konvertierung reaktionsfähig.
 - Fehlerdialoge verbessert (inkl. erster Fehlermeldung aus stderr).
 - Pfadanzeige überarbeitet: relative Pfade nur innerhalb des Arbeitsordners, sonst absolute Pfade.
 
 ### Behoben
+
 - Fehler bei Drag & Drop, wenn tkinterdnd2 installiert, aber nicht korrekt initialisiert war (TkinterDnD.Tk wird nun sicher verwendet).
 - Animation wurde zuvor nur bei der ersten Datei angezeigt – läuft jetzt durchgehend.
 
 ### Hinweise
+
 - Protokollierung weiterhin über CLI verfügbar (`--log`).
 
 ---
 
 ## [0.1.0] – 2026-04-11
+
 ### Hinzugefügt
+
 - Vollständige **CLI-Version** mit:
   - Verarbeitung einzelner HTML-Dateien
   - Verarbeitung aller HTML-Dateien eines Ordners
@@ -71,10 +103,12 @@ und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikati
   - Dokumentation des Entwicklungsstands
 
 ### Geändert
+
 - Absolute Paketimporte eingeführt, um Installationsfehler zu vermeiden.
 - Logging verbessert und um Versionsausgabe erweitert.
 
 ### Bekannte Einschränkungen
+
 - GUI führt noch keine echte Konvertierung durch.
 - Keine rekursive Ordnersuche in der CLI.
 - Keine Konfigurationsdatei.
@@ -83,6 +117,7 @@ und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikati
 ---
 
 ## [Unveröffentlicht]
+
 ### Geplant
 - GUI-Konvertierung (Version 0.2.0)
 - Erweiterte CLI-Funktionen (Version 0.3.0)

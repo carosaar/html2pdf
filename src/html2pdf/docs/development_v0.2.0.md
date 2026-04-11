@@ -200,3 +200,14 @@ Version **0.2.0** macht die GUI:
 - **professionell**
 
 Die GUI ist jetzt ein vollwertiges Frontend für die HTML‑zu‑PDF‑Konvertierung und steht funktional auf einer Stufe mit der CLI.
+
+---
+
+für Version 0.2.1, inklusive:
+* Beenden‑Button (oben rechts)
+* Abbrechen‑Button (unten, neben „Konvertieren“)
+* Thread‑Stop‑Mechanismus (cancel_requested)
+* Stabilisierte GUI‑Updates (keine Überflutung bei 14.000 Dateien)
+* Ruhige Animation (SPINNER_SPEED)
+* Drag & Drop nur bei korrekt initialisiertem TkinterDnD
+* Alle Features aus 0.2.0 vollständig enthalten
