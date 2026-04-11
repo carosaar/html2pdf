@@ -37,7 +37,7 @@ Die CLI ist ideal für Automatisierung, Skripte oder Batch‑Verarbeitung.
 Beispiel:
 
 ```bash
-html2pdf input.html output.pdf
+html2pdf --input input.html --output output.pdf --log logger.txt
 ```
 
 Weitere Optionen:
@@ -45,6 +45,15 @@ Weitere Optionen:
 ```bash
 html2pdf --help
 ```
+
+>html2pdf - HTML → PDF Konverter (Version 0.2.1)
+
+options:
+  -h, --help       show this help message and exit
+  --input INPUT
+  --output OUTPUT
+  --silent
+  --log LOG
 
 ---
 
