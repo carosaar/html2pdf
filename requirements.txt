@@ -1,0 +1,11 @@
+# Optional: Drag & Drop Unterstützung für die GUI
+tkinterdnd2==0.3.0
+
+# CLI-Unterstützung
+click==8.1.7
+
+# Build-Tools
+setuptools>=61.0
+
+# Optional: farbige CLI-Ausgaben unter Windows
+colorama==0.4.6

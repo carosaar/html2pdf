@@ -7,6 +7,18 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.10"
+license = {file = "LICENSE"}
+
+keywords = ["html", "pdf", "wkhtmltopdf", "converter", "gui", "cli"]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: Microsoft :: Windows",
+    "License :: OSI Approved :: MIT License",
+    "Environment :: Win32 (MS Windows)",
+    "Topic :: Utilities",
+]
 
 dependencies = [
 ]

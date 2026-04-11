@@ -1,63 +1,166 @@
-# HTML2PDF – HTML‑zu‑PDF Konverter (GUI & CLI)
+# 📘 **README.md (Version 0.2.1)**
 
-Ein Python‑Tool zur Konvertierung von HTML‑Dateien in PDF mittels **wkhtmltopdf**.  
-Unterstützt **GUI** (Tkinter) und **CLI** für automatisierte Workflows.
+# html2pdf  
+GUI- und CLI‑Tool zur HTML‑zu‑PDF‑Konvertierung mit wkhtmltopdf
 
-## ✨ Features
+**html2pdf** ist ein leichtgewichtiges, schnelles und plattformfreundliches Werkzeug zur Konvertierung von statischen HTML‑Dateien in PDF‑Dokumente.  
+Es bietet sowohl eine **grafische Benutzeroberfläche (GUI)** als auch eine **Kommandozeilen‑Schnittstelle (CLI)** und nutzt intern das bewährte Tool **wkhtmltopdf**.
 
-- GUI mit Dateiauswahl, Fortschrittsanzeige und Statusmeldungen  
-- CLI für automatisierte Verarbeitung (Ordner oder Einzeldatei)  
-- Automatische Erzeugung der PDF‑Dateinamen  
-- Prüfung, ob `wkhtmltopdf` installiert ist  
-- Logging‑Unterstützung  
-- Saubere, modulare Projektstruktur (`src/`‑Layout)
+---
+
+## 🚀 Funktionen
+
+### ✔ GUI‑Funktionen (Version 0.2.1)
+
+- Mehrfachauswahl von HTML‑Dateien  
+- Tabellenansicht mit:
+  - HTML‑Datei  
+  - HTML‑Ordner (relativ zum Arbeitsordner)  
+  - PDF‑Datei  
+  - PDF‑Ordner  
+  - Status (Bereit, In Arbeit…, Fertig ✔, Fehler, Abgebrochen)  
+- Drag & Drop Unterstützung (falls `tkinterdnd2` installiert ist)  
+- Ausgabeordner wählen  
+- Fortschrittsanzeige mit Animation  
+- Doppelklick zum Entfernen einzelner Einträge  
+- **🗑️ Liste leeren**  
+- **⛔ Abbrechen** einer laufenden Konvertierung (mit akustischem Signal + Dialog)  
+- **Beenden‑Button**  
+- GUI bleibt auch bei sehr großen Dateimengen (10.000+) reaktionsfähig  
+
+---
+
+## 🖥️ CLI‑Funktionen
+
+Die CLI ist ideal für Automatisierung, Skripte oder Batch‑Verarbeitung.
+
+Beispiel:
+
+```bash
+html2pdf input.html output.pdf
+```
+
+Weitere Optionen:
+
+```bash
+html2pdf --help
+```
+
+---
 
 ## 📦 Installation
 
-Voraussetzung: Python 3.10+
+### 1. Python installieren  
 
+Erforderlich: **Python 3.10 oder höher**
+
+### 2. Repository klonen
+
+```bash
+git clone https://github.com/carosaar/html2pdf.git
+cd html2pdf
 ```
+
+### 3. Abhängigkeiten installieren
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Paket installieren (lokal)
+
+```bash
 pip install .
 ```
 
-Start der GUI:
+### 5. GUI starten
 
+```bash
+python -m html2pdf.gui
 ```
+
+oder (falls als Script installiert):
+
+```bash
 html2pdf
 ```
 
-CLI‑Modus:
+---
 
-```
-html2pdf --input <pfad> [--output <ordner>] [--silent] [--log <datei>]
-```
+## 🛠️ Voraussetzung: wkhtmltopdf
 
-Beispiele:
+Dieses Projekt nutzt **wkhtmltopdf.exe** zur PDF‑Erzeugung.
 
-```
-html2pdf --input C:\webseite\index.html
-html2pdf --input C:\webseiten\ --output C:\pdfs\
-```
+Download:  
+`https://wkhtmltopdf.org/downloads.html` [(wkhtmltopdf.org in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fwkhtmltopdf.org%2Fdownloads.html")
 
-## 🔧 Voraussetzungen
+Nach der Installation muss `wkhtmltopdf` im **PATH** liegen.
 
-- Installiertes `wkhtmltopdf`  
-  Download: https://wkhtmltopdf.org/downloads.html  
-- Windows, Linux oder macOS
+---
 
 ## 📁 Projektstruktur
 
+```text
+html2pdf/
+ ├── core/
+ │    ├── converter.py          # Aufruf von wkhtmltopdf
+ │    ├── file_utils.py         # Pfadberechnung
+ │    ├── wkhtmltopdf_check.py  # Prüfung der Installation
+ │
+ ├── gui/
+ │    └── gui_app.py            # Tkinter GUI (Version 0.2.1)
+ │
+ ├── cli/
+ │    └── main.py               # CLI-Einstiegspunkt
+ │
+ ├── assets/
+ │    └── html2pdf.ico          # App-Icon
+ │
+ ├── version.py                 
+ └── ...
 ```
-src/html2pdf/
-    main.py
-    core/
-    gui/
-    cli/
-    docs/
+
+---
+
+## 🔧 Entwicklung
+
+### Projekt bauen
+
+```bash
+python -m build
 ```
+
+### Tests (optional)
+
+```bash
+pytest
+```
+
+---
 
 ## 📄 Lizenz
 
 Dieses Projekt steht unter der **MIT‑Lizenz**.  
-Siehe Datei `LICENSE` für Details.
+Siehe Datei `LICENSE`.
 
+---
+
+## 🤝 Mitwirken
+
+Pull Requests sind willkommen!  
+Bitte achte auf:
+
+- klare Commit‑Nachrichten  
+- saubere Struktur  
+- funktionierende GUI/CLI  
+- reproduzierbare Fehlerbeschreibungen  
+
+---
+
+## Autor
+
+(c) 2026 Dieter Eckstein
+
+## ⭐ Feedback
+
+Wenn dir das Tool gefällt, freue ich mich über ein ⭐ auf GitHub!
