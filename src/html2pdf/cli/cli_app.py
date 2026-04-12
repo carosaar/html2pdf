@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 
 from html2pdf.core.file_utils import resolve_input_path, build_output_path
-from html2pdf.core.converter import convert_single_html
+from html2pdf.core.converter import start_wkhtmltopdf, run_and_wait
 from html2pdf.core.logger import setup_logger
 from html2pdf.core.wkhtmltopdf_check import ensure_wkhtmltopdf_or_raise
 from html2pdf.version import __version__
@@ -77,7 +77,13 @@ def run_cli():
             spinner_thread.start()
 
         # Konvertierung durchführen
-        code, stdout, stderr = convert_single_html(input_file, output_file)
+        process = start_wkhtmltopdf(input_file, output_file)
+
+        # Prozess überwachen
+        while process.poll() is None:
+            time.sleep(0.1)
+
+        code, stdout, stderr = run_and_wait(process)
 
         # Spinner stoppen
         if not args.silent:

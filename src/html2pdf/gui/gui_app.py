@@ -1,5 +1,6 @@
 """
-GUI-Frontend (Tkinter) – Version 0.2.1
+GUI-Frontend (Tkinter) – Version 0.3.0
+Mit sofort abbrechbarer Konvertierung.
 """
 
 import threading
@@ -7,17 +8,15 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 import os
+import time
 
 from html2pdf.core.file_utils import build_output_path
-from html2pdf.core.converter import convert_single_html
+from html2pdf.core.converter import start_wkhtmltopdf, run_and_wait
 from html2pdf.core.wkhtmltopdf_check import ensure_wkhtmltopdf_or_raise
 from html2pdf.version import __version__
 
 
-# ---------------------------------------------------------
-# Konfiguration
-# ---------------------------------------------------------
-SPINNER_SPEED = 150  # ms – Animationstempo (höher = ruhiger)
+SPINNER_SPEED = 150  # ms – Animationstempo
 
 
 # ---------------------------------------------------------
@@ -37,16 +36,18 @@ def try_enable_drag_and_drop(widget, on_drop_callback):
 # GUI Hauptfunktion
 # ---------------------------------------------------------
 def run_gui():
-    # TkinterDnD sicher initialisieren
+    # Erst normales Tk erzeugen (wichtig!)
+    app = tk.Tk()
+
+    # TkinterDnD NACHTRÄGLICH aktivieren
     try:
         import tkinterdnd2 as tkdnd
-        app = tkdnd.TkinterDnD.Tk()
+        tkdnd.TkinterDnD._require(app)   # <<< entscheidend: bindet DnD an bestehendes Root
         DND_AVAILABLE = True
     except Exception:
-        app = tk.Tk()
         DND_AVAILABLE = False
 
-    app.title(f"HTML → PDF Converter (v{__version__})")
+    app.title(f"HTML → PDF Converter {__version__}")
     app.geometry("900x650")
 
     # App-Icon einbinden
@@ -70,7 +71,8 @@ def run_gui():
 
     files: list[dict] = []  # {"html": Path, "pdf": Path, "status": str}
     output_folder = tk.StringVar(value="")
-    cancel_requested = False  # Abbruch-Flag
+    cancel_requested = False
+    current_process = None  # laufender wkhtmltopdf-Prozess
 
     # -----------------------------------------------------
     # Hilfsfunktionen
@@ -174,9 +176,18 @@ def run_gui():
         messagebox.showinfo("Information", msg)
 
     def request_cancel():
-        nonlocal cancel_requested
+        nonlocal cancel_requested, current_process
         cancel_requested = True
         status_var.set("Abbruch angefordert…")
+
+        if current_process and current_process.poll() is None:
+            try:
+                # Sauberer Abbruch wie CTRL+C
+                current_process.send_signal(signal.CTRL_BREAK_EVENT)
+            except Exception:
+                # Fallback: hart killen
+                current_process.kill()
+
 
     def request_exit():
         if convert_button["state"] == "disabled":
@@ -188,8 +199,9 @@ def run_gui():
     # Konvertierung
     # -----------------------------------------------------
     def start_conversion():
-        nonlocal cancel_requested
+        nonlocal cancel_requested, current_process
         cancel_requested = False
+        current_process = None
 
         try:
             ensure_wkhtmltopdf_or_raise()
@@ -209,8 +221,11 @@ def run_gui():
         status_var.set("Konvertierung läuft…")
         convert_button.config(state="disabled")
         cancel_button.config(state="normal")
+        exit_button.config(state="disabled")
 
         def worker():
+            nonlocal current_process
+
             total = len(files)
             for idx, entry in enumerate(files):
 
@@ -225,12 +240,27 @@ def run_gui():
                 entry["status"] = "In Arbeit…"
                 app.after_idle(refresh_tree)
 
-                code, stdout, stderr = convert_single_html(html_path, pdf_path)
+                # Prozess starten
+                process = start_wkhtmltopdf(html_path, pdf_path)
+                current_process = process
+
+                # Prozess überwachen
+                while process.poll() is None:
+                    if cancel_requested:
+                        try:
+                            process.terminate()
+                        except Exception:
+                            pass
+                        entry["status"] = "Abgebrochen"
+                        app.after_idle(refresh_tree)
+                        break
+                    time.sleep(0.1)
 
                 if cancel_requested:
-                    entry["status"] = "Abgebrochen"
-                    app.after_idle(refresh_tree)
                     break
+
+                # Ergebnis auslesen
+                code, stdout, stderr = run_and_wait(process)
 
                 if code != 0:
                     first_line = stderr.splitlines()[0] if stderr else "Unbekannter Fehler"
@@ -258,6 +288,7 @@ def run_gui():
 
                 convert_button.config(state="normal")
                 cancel_button.config(state="disabled")
+                exit_button.config(state="normal")
                 refresh_tree()
 
             app.after(0, finish)
@@ -286,10 +317,12 @@ def run_gui():
     ttk.Button(top_frame, text="❌ Ausgewählte entfernen", command=remove_selected).pack(side="left", padx=(5, 0))
     ttk.Button(top_frame, text="🗑️ Liste leeren", command=clear_list).pack(side="left", padx=(5, 0))
 
-    ttk.Button(top_frame, text="Beenden", command=request_exit).pack(side="right")
+    exit_button = ttk.Button(top_frame, text="Beenden", command=request_exit)
+    exit_button.pack(side="right")
+
     ttk.Button(top_frame, text="ℹ️ INFO", command=show_info).pack(side="right", padx=(0, 5))
 
-    # Tabelle + Scrollbar (Scrollbalken zuerst packen!)
+    # Tabelle + Scrollbar
     table_frame = ttk.Frame(main_frame)
     table_frame.pack(fill="both", expand=True, pady=10)
 
@@ -317,7 +350,6 @@ def run_gui():
     scrollbar = ttk.Scrollbar(table_frame, orient="vertical", command=tree.yview)
     tree.configure(yscrollcommand=scrollbar.set)
 
-    # WICHTIG: Scrollbar zuerst packen, dann Treeview
     scrollbar.pack(side="right", fill="y")
     tree.pack(side="left", fill="both", expand=True)
 
@@ -354,5 +386,21 @@ def run_gui():
         state="disabled",
     )
     cancel_button.pack(side="left", padx=(10, 0))
+
+    # -----------------------------------------------------
+    # Fenster schließen abfangen – jetzt existieren alle Widgets
+    # -----------------------------------------------------
+    def on_close():
+        if convert_button["state"] == "disabled":
+            if messagebox.askyesno(
+                "Konvertierung läuft",
+                "Es läuft gerade eine Konvertierung.\nSoll sie abgebrochen und das Programm geschlossen werden?"
+            ):
+                request_cancel()
+                app.after(200, on_close)
+            return
+        app.destroy()
+
+    app.protocol("WM_DELETE_WINDOW", on_close)
 
     app.mainloop()

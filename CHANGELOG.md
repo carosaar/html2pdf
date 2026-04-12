@@ -5,6 +5,21 @@ Alle Änderungen an diesem Projekt werden in diesem Dokument festgehalten.
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
+
+## 0.3.0 – Verbesserte Prozesssteuerung & stabilere GUI 2026-04-12
+
+### Neu
+- Sofortiger Abbruch laufender Konvertierungen: Der `wkhtmltopdf`‑Prozess wird nun unmittelbar beendet, sobald der Benutzer „Abbrechen“ auswählt.
+- Verbesserte Prozessüberwachung: Die GUI reagiert unmittelbar auf Statusänderungen und bleibt auch bei vielen Dateien flüssig.
+
+### Verbessert
+- Der **Beenden‑Button** ist während einer laufenden Konvertierung deaktiviert, um unbeabsichtigtes Schließen zu verhindern.
+- Stabilere GUI‑Interaktion während der Konvertierung (Statusupdates, Fortschrittsanzeige, Responsiveness).
+
+### Intern
+- Überarbeitete Prozesslogik für Start, Überwachung und Abbruch.
+- Vereinheitlichte Statusmeldungen und Fehlerbehandlung.
+
 ## [0.2.2] - 2026-04-11
 
 ### Behoben

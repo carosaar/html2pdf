@@ -24,9 +24,11 @@ Es bietet sowohl eine **grafische Benutzeroberfläche (GUI)** als auch eine **Ko
 - Fortschrittsanzeige mit Animation  
 - Doppelklick zum Entfernen einzelner Einträge  
 - **🗑️ Liste leeren**  
-- **⛔ Abbrechen** einer laufenden Konvertierung (mit akustischem Signal + Dialog)  
-- **Beenden‑Button**  
+- **⛔ Abbrechen** einer laufenden Konvertierung  
+  - laufender `wkhtmltopdf`‑Prozess wird sofort beendet  
+- **Beenden‑Button wird während der Konvertierung deaktiviert**  
 - GUI bleibt auch bei sehr großen Dateimengen (10.000+) reaktionsfähig  
+
 
 ---
 
@@ -46,7 +48,7 @@ Weitere Optionen:
 html2pdf --help
 ```
 
->html2pdf - HTML → PDF Konverter (Version 0.2.1)
+>html2pdf - HTML → PDF Konverter (Version 0.3.0)
 
 options:
   -h, --help       show this help message and exit
@@ -117,7 +119,7 @@ html2pdf/
  │    ├── wkhtmltopdf_check.py  # Prüfung der Installation
  │
  ├── gui/
- │    └── gui_app.py            # Tkinter GUI (Version 0.2.1)
+ │    └── gui_app.py            # Tkinter GUI 
  │
  ├── cli/
  │    └── main.py               # CLI-Einstiegspunkt
@@ -185,7 +187,7 @@ Bitte achte auf:
 
 ---
 
-## Autor
+## 👤 Autor
 
 (c) 2026 Dieter Eckstein
 
