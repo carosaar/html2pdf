@@ -19,7 +19,7 @@ venv/
 env/
 
 # Installer / PyInstaller
-*.spec
+# *.spec
 installer/
 output/
 html2pdf.exe

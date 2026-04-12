@@ -6,6 +6,23 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
 
+## 0.4.0 – Eingebettete wkhtmltopdf‑Engine (Standalone‑Modus) 2026-04-12
+
+### Neu
+- html2pdf enthält nun eine **eingebettete portable Version von wkhtmltopdf**  
+  (`wkhtmltopdf.exe` + `libwkhtmltox.dll`).  
+  Dadurch funktioniert html2pdf **ohne Installation** von wkhtmltopdf und ohne PATH‑Eintrag.
+- Automatische Erkennung:  
+  html2pdf nutzt bevorzugt die interne Version, fällt aber bei Bedarf auf eine Systeminstallation zurück.
+
+### Verbessert
+- Stabilere Pfadlogik für portable Builds (PyInstaller‑kompatibel).
+- Vereinheitlichte Fehlerbehandlung, falls weder interne noch externe wkhtmltopdf‑Version verfügbar ist.
+
+### Intern
+- Neuer Mechanismus zur Pfadauflösung (`wkhtmltopdf_check.py`).
+- Spec‑Datei erweitert, um die portable wkhtmltopdf‑Engine einzubetten.
+
 ## 0.3.0 – Verbesserte Prozesssteuerung & stabilere GUI 2026-04-12
 
 ### Neu

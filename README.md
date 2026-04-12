@@ -1,16 +1,16 @@
-# 📘 **README.md (Version 0.2.1)**
+# 📘 **README.md (Version 0.4.0)**
 
 # html2pdf  
-GUI- und CLI‑Tool zur HTML‑zu‑PDF‑Konvertierung mit wkhtmltopdf
+GUI‑ und CLI‑Tool zur HTML‑zu‑PDF‑Konvertierung mit **eingebetteter wkhtmltopdf‑Engine**
 
 **html2pdf** ist ein leichtgewichtiges, schnelles und plattformfreundliches Werkzeug zur Konvertierung von statischen HTML‑Dateien in PDF‑Dokumente.  
-Es bietet sowohl eine **grafische Benutzeroberfläche (GUI)** als auch eine **Kommandozeilen‑Schnittstelle (CLI)** und nutzt intern das bewährte Tool **wkhtmltopdf**.
+Es bietet sowohl eine **grafische Benutzeroberfläche (GUI)** als auch eine **Kommandozeilen‑Schnittstelle (CLI)** und enthält ab Version **0.4.0** eine **portable Version von wkhtmltopdf**, sodass **keine Installation** von wkhtmltopdf mehr erforderlich ist.
 
 ---
 
 ## 🚀 Funktionen
 
-### ✔ GUI‑Funktionen (Version 0.2.1)
+### ✔ GUI‑Funktionen (Version 0.4.0)
 
 - Mehrfachauswahl von HTML‑Dateien  
 - Tabellenansicht mit:
@@ -25,10 +25,10 @@ Es bietet sowohl eine **grafische Benutzeroberfläche (GUI)** als auch eine **Ko
 - Doppelklick zum Entfernen einzelner Einträge  
 - **🗑️ Liste leeren**  
 - **⛔ Abbrechen** einer laufenden Konvertierung  
-  - laufender `wkhtmltopdf`‑Prozess wird sofort beendet  
+  - der laufende `wkhtmltopdf`‑Prozess wird sofort beendet  
 - **Beenden‑Button wird während der Konvertierung deaktiviert**  
 - GUI bleibt auch bei sehr großen Dateimengen (10.000+) reaktionsfähig  
-
+- Automatische Nutzung der eingebetteten wkhtmltopdf‑Engine  
 
 ---
 
@@ -48,21 +48,40 @@ Weitere Optionen:
 html2pdf --help
 ```
 
->html2pdf - HTML → PDF Konverter (Version 0.3.0)
+>html2pdf – HTML → PDF Konverter (Version 0.4.0)
 
 options:
-  -h, --help       show this help message and exit
-  --input INPUT
-  --output OUTPUT
-  --silent
-  --log LOG
+  -h, --help       show this help message and exit  
+  --input INPUT  
+  --output OUTPUT  
+  --silent  
+  --log LOG  
 
 ---
 
-## 📦 Installation
+## 🛠️ Eingebettete wkhtmltopdf‑Engine (ab Version 0.4.0)
+
+html2pdf enthält eine **portable Version von wkhtmltopdf**  
+(`wkhtmltopdf.exe` + `libwkhtmltox.dll`) im Ordner:
+
+```
+html2pdf/bin/
+```
+
+Dadurch funktioniert html2pdf:
+
+- **ohne Installation** von wkhtmltopdf  
+- **ohne PATH‑Eintrag**  
+- **ohne Administratorrechte**  
+- **vollständig portabel**  
+
+Falls die interne Version fehlt, versucht html2pdf automatisch, eine Systeminstallation zu verwenden.
+
+---
+
+## 📦 Installation (Python‑Version)
 
 ### 1. Python installieren  
-
 Erforderlich: **Python 3.10 oder höher**
 
 ### 2. Repository klonen
@@ -98,28 +117,17 @@ html2pdf
 
 ---
 
-## 🛠️ Voraussetzung: wkhtmltopdf
-
-Dieses Projekt nutzt **wkhtmltopdf.exe** zur PDF‑Erzeugung.
-
-Download:  
-`https://wkhtmltopdf.org/downloads.html` [(wkhtmltopdf.org in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fwkhtmltopdf.org%2Fdownloads.html")
-
-Nach der Installation muss `wkhtmltopdf` im **PATH** liegen.
-
----
-
 ## 📁 Projektstruktur
 
 ```text
 html2pdf/
  ├── core/
- │    ├── converter.py          # Aufruf von wkhtmltopdf
+ │    ├── converter.py          # Aufruf der eingebetteten wkhtmltopdf-Engine
  │    ├── file_utils.py         # Pfadberechnung
- │    ├── wkhtmltopdf_check.py  # Prüfung der Installation
+ │    ├── wkhtmltopdf_check.py  # Erkennung der internen/externen Engine
  │
  ├── gui/
- │    └── gui_app.py            # Tkinter GUI 
+ │    └── gui_app.py            # Tkinter GUI
  │
  ├── cli/
  │    └── main.py               # CLI-Einstiegspunkt
@@ -127,7 +135,11 @@ html2pdf/
  ├── assets/
  │    └── html2pdf.ico          # App-Icon
  │
- ├── version.py                 
+ ├── bin/                       # Eingebettete wkhtmltopdf-Engine (NEU ab 0.4.0)
+ │    ├── wkhtmltopdf.exe
+ │    └── libwkhtmltox.dll
+ │
+ ├── version.py
  └── ...
 ```
 
@@ -151,27 +163,28 @@ pytest
 
 ## 📄 Lizenz
 
-html2pdf steht unter der MIT-Lizenz (siehe LICENSE).
+html2pdf steht unter der MIT‑Lizenz (siehe LICENSE).
 
-Dieses Projekt verwendet zusätzlich die Software **wkhtmltopdf**, die unter der
+### Nutzung von wkhtmltopdf
+
+html2pdf verwendet die Software **wkhtmltopdf**, die unter der  
 GNU Lesser General Public License Version 3 (LGPL‑3.0) veröffentlicht wird.
 
-**wkhtmltopdf** wird nicht verändert, sondern lediglich als externes Programm aufgerufen.
-Gemäß den Bedingungen der LGPL‑3.0 darf wkhtmltopdf in proprietären oder MIT‑lizenzierten Projekten verwendet werden, solange:
+Ab Version **0.4.0** wird eine **unveränderte portable Version** von wkhtmltopdf  
+(`wkhtmltopdf.exe` + `libwkhtmltox.dll`) direkt mitgeliefert.
 
-* ein Hinweis auf die Nutzung erfolgt
-* die Lizenzbedingungen der LGPL‑3.0 beigefügt werden
-* Änderungen an wkhtmltopdf (falls vorhanden) offengelegt würden
-(html2pdf nimmt keine Änderungen vor)
+Gemäß LGPL‑3.0 ist dies zulässig, solange:
 
-Weitere Informationen zu wkhtmltopdf:
-https://github.com/wkhtmltopdf/wkhtmltopdf 
+- die LGPL‑Lizenz beigefügt wird,  
+- ein Hinweis auf die Nutzung erfolgt,  
+- Änderungen an wkhtmltopdf (falls vorhanden) offengelegt werden (Es sind keine Änderungen vorgenommen worden).  
+
+html2pdf nimmt **keine Änderungen** an wkhtmltopdf vor.
 
 Die vollständigen Lizenztexte befinden sich in:
 
-LICENSE (MIT-Lizenz für html2pdf)
-
-LICENSES/wkhtmltopdf-LGPL-3.0.txt (LGPL‑3.0 für wkhtmltopdf)
+- `LICENSE` (MIT‑Lizenz für html2pdf)  
+- `LICENSES/wkhtmltopdf-LGPL-3.0.txt` (LGPL‑3.0 für wkhtmltopdf)  
 
 ---
 
@@ -190,6 +203,8 @@ Bitte achte auf:
 ## 👤 Autor
 
 (c) 2026 Dieter Eckstein
+
+---
 
 ## ⭐ Feedback
 
