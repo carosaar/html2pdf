@@ -58,3 +58,4 @@ htmlcov/
 .cache/
 pytest_cache/
 *.pdf
+bumpBersion.bat

@@ -38,7 +38,7 @@ class GuiLogger:
         Fügt einen Logeintrag hinzu.
         input_path: vollständiger Pfad zur Eingabedatei
         output_path: vollständiger Pfad zur Ausgabedatei
-        status: "Erfolg" oder "Fehler <Text>"
+        status: "Erfolg" oder "Fehler <Text>" oder GUI-Status wie "Fertig ✔"
         """
 
         input_dir = str(input_path.parent.resolve())
@@ -48,7 +48,8 @@ class GuiLogger:
             (input_path.name, output_path.name, status)
         )
 
-        if status.startswith("Erfolg"):
+        # Erfolgslogik: GUI liefert "Fertig ✔", CLI liefert "Erfolg"
+        if status.startswith(("Erfolg", "Fertig", "OK")):
             self.ok_count += 1
         else:
             self.fail_count += 1

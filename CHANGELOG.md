@@ -6,6 +6,20 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
 
+
+## **0.5.1 – Bugfix: GUI‑Protokollierung zählt Erfolge korrekt**
+
+### 🐞 Behoben
+- Erfolgreiche Konvertierungen wurden in der GUI‑Logdatei fälschlich als Fehler gezählt  
+  - Ursache: GUI übergab `"Fertig ✔"` statt `"Erfolg"`  
+  - Lösung: Logger erkennt jetzt `"Erfolg"`, `"Fertig"` und `"OK"` als erfolgreiche Statuswerte
+
+### 🔧 Intern
+- Erfolgslogik in `logger_gui.py` vereinheitlicht  
+- Logformat bleibt vollständig CLI‑kompatibel  
+- Keine Änderungen an README oder Handbuch erforderlich
+
+
 ## 0.5.0 – Protokollierung und CLI-Überarbeitung
 
 # 🟦 **(GUI‑Protokollierung)**
