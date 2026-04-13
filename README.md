@@ -1,4 +1,5 @@
-# 🟦 **README** html2pdf – Version 0.4.1
+# 🟦 **README**  
+html2pdf – Version 0.5.0  
 GUI‑ und CLI‑Tool zur HTML‑zu‑PDF‑Konvertierung mit eingebetteter wkhtmltopdf‑Engine
 
 **html2pdf** ist ein schnelles, portables Werkzeug zur Konvertierung von HTML‑Dateien in PDF‑Dokumente.  
@@ -6,51 +7,75 @@ Es bietet sowohl eine **grafische Benutzeroberfläche (GUI)** als auch eine **Ko
 
 ---
 
-## 🚀 Neuerungen in Version 0.4.1
+# 🚀 Neuerungen in Version 0.5.0 (GUI)
 
-### ✔ Deadlock‑Fix für große HTML‑Dateien
-- wkhtmltopdf erzeugt umfangreiche stderr‑Ausgaben  
-- diese führten bei früheren Versionen zu Hängern  
-- 0.4.1 nutzt nun:
-  - **Live‑Auslesen von stderr** (GUI & nicht‑silent CLI)  
-  - **DEVNULL‑Umleitung im Silent‑Mode**  
-- Ergebnis: **keine Hänger mehr**, auch bei sehr großen Dateien
+### 📝 Vollständig integrierte Protokollierung
+- Protokollierung kann per Checkbox aktiviert werden  
+- Nutzer kann eine Logdatei auswählen  
+- Wenn keine Logdatei gesetzt ist, erzeugt die GUI **automatisch** eine:
+  - bei vorhandenen Dateien → im Ordner der **ersten HTML‑Datei**  
+  - sonst → im **aktuellen Arbeitsordner**  
+- Erzeugung erfolgt **still**, ohne Dialoge oder Unterbrechungen  
+- Logdatei enthält:
+  - Kopfbereich mit Datum  
+  - HTML‑Pfad, PDF‑Pfad, Status  
+  - Zusammenfassung am Ende  
 
-### ✔ Silent‑Mode vollständig korrigiert
-- keine Fortschrittsmeldungen  
-- keine Logger‑Ausgaben  
-- keine Startmeldung  
-- keine versteckten stderr‑Flushes  
-- absolut geräuschlos
+### 🪟 Neue Protokollanzeige
+- eigenes Fenster mit App‑Icon  
+- Monospace‑Darstellung  
+- Scrollbar  
+- Buttons:
+  - **📝 Protokoll öffnen** → öffnet die Datei im Standardeditor  
+  - **📂 Ordner öffnen** → öffnet Explorer und **markiert die Logdatei**  
+  - **❎ Schließen**
 
-### ✔ Logging überarbeitet
-- Logdatei wird **neu geschrieben**, nicht angehängt  
-- Automatische Logdatei: `<basename>_log.txt`  
-- Pro Datei wird protokolliert:
-  - Eingabedatei (vollständiger Pfad)  
-  - Ausgabedatei (vollständiger Pfad)  
-  - Fehler (falls vorhanden)  
-  - Trennzeile `---`  
+### 📂 Explorer‑Integration
+- Ordner öffnen nutzt jetzt:
+  ```
+  explorer /select,"<pfad>"
+  ```
+- funktioniert zuverlässig mit:
+  - langen Pfaden  
+  - Leerzeichen  
+  - Netzwerkpfaden (UNC)  
 
-### ✔ GUI: Live‑Fortschrittsanzeige
-- stderr‑Ausgabe von wkhtmltopdf wird live in der Statuszeile angezeigt  
-- Abbruchfunktion bleibt sofort wirksam  
-- große Dateien funktionieren zuverlässig
+### 🧭 Pfadkorrekturen
+- relative Pfade werden korrekt angezeigt (`.\` statt `.\.\`)  
+- stabile Normalisierung der Ordnerpfade in der Dateiliste  
 
 ---
 
-## 🖥️ GUI‑Funktionen
+# 🖥️ GUI‑Funktionen
 
+### 📁 Dateiverwaltung
 - Mehrfachauswahl von HTML‑Dateien  
-- Tabellenansicht mit Pfaden und Status  
 - Drag & Drop Unterstützung  
-- Ausgabeordner wählen  
-- Fortschrittsanzeige + Live‑Status aus wkhtmltopdf  
-- Abbrechen‑Button (sofort wirksam)  
 - Doppelklick zum Entfernen  
 - Liste leeren  
-- GUI bleibt auch bei sehr großen Dateimengen reaktionsfähig  
+- Anzeige des aktuellen Arbeitsordners  
+- relative Pfade innerhalb des Arbeitsordners  
+- automatische Pfadkorrektur  
+
+### 🧭 Ausgabeordner
+- frei wählbar  
+- dynamische Aktualisierung der PDF‑Zielpfade  
+- Ausgabeordner wird automatisch erstellt  
+- PDFs werden ohne Rückfrage überschrieben  
+
+### ⚙️ Konvertierung
 - Nutzung der eingebetteten wkhtmltopdf‑Engine  
+- Live‑Statusanzeige (stderr‑Ausgabe in Echtzeit)  
+- Fortschrittsbalken mit ruhiger Animation  
+- sofort wirksamer Abbrechen‑Button  
+- GUI bleibt auch bei großen Dateimengen reaktionsfähig  
+- Fehlerdialoge mit erster stderr‑Zeile  
+
+### 📝 Protokollierung (Details)
+- optional aktivierbar  
+- automatische Logdatei‑Erzeugung  
+- Logdatei wird neu geschrieben  
+- Protokollanzeige mit Editor‑ und Explorer‑Integration  
 
 Starten:
 
@@ -66,7 +91,7 @@ python -m html2pdf.gui
 
 ---
 
-## 🖥️ CLI‑Funktionen
+# 🖥️ CLI‑Funktionen
 
 Beispiel:
 
@@ -83,16 +108,6 @@ Optionen:
 --log <optional: logfile>
 ```
 
-### Logging (neu in 0.4.1)
-
-- Standard: `<basename>_log.txt`  
-- Inhalt pro Datei:
-  ```
-  Verarbeite: C:\Pfad\input.html
-  Erstellt:   C:\Pfad\output.pdf
-  ---
-  ```
-
 Silent‑Mode:
 
 - keine Ausgabe  
@@ -101,7 +116,7 @@ Silent‑Mode:
 
 ---
 
-## 🛠️ Eingebettete wkhtmltopdf‑Engine
+# 🛠️ Eingebettete wkhtmltopdf‑Engine
 
 html2pdf enthält eine portable Version von wkhtmltopdf im Ordner:
 
@@ -118,7 +133,7 @@ Vorteile:
 
 ---
 
-## 📦 Installation
+# 📦 Installation
 
 ### 1. Repository klonen
 
@@ -141,7 +156,7 @@ pip install .
 
 ---
 
-## 📁 Projektstruktur
+# 📁 Projektstruktur
 
 ```text
 html2pdf/
@@ -169,19 +184,20 @@ html2pdf/
 
 ---
 
-## 📄 Lizenz
+# 📄 Lizenz
 
 - html2pdf: MIT‑Lizenz  
 - wkhtmltopdf: LGPL‑3.0 (unveränderte portable Version wird mitgeliefert)
 
 ---
 
-## 👤 Autor
+# 👤 Autor
 
 (c) 2026 Dieter Eckstein
 
 ---
 
-## ⭐ Feedback
+# ⭐ Feedback
 
 Wenn dir das Tool gefällt, freue ich mich über ein ⭐ auf GitHub!
+

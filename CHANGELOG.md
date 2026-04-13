@@ -6,8 +6,43 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
 
-## 0.5.0 – Neue CLI‑Engine (Masken, Auto‑Endungen, Logging, Append‑Modus)
+## 0.5.0 – Protokollierung und CLI-Überarbeitung
 
+# 🟦 **(GUI‑Protokollierung)**
+
+### Ergänzungen – GUI‑Protokollierung
+
+- **Neue integrierte Protokollanzeige**
+  - eigenes Fenster mit Scrollbar, Monospace‑Font und App‑Icon  
+  - Buttons:
+    - **📝 Protokoll öffnen** (Standardeditor)
+    - **📂 Ordner öffnen** (Explorer mit Dateimarkierung)
+    - **❎ Schließen**
+
+- **Automatische Logdatei‑Erzeugung**
+  - Wenn Logging aktiviert ist, aber kein Logdateiname gesetzt wurde, erzeugt die GUI automatisch einen gültigen Pfad:
+    - bei vorhandenen Dateien → Ordner der ersten HTML‑Datei  
+    - sonst → aktueller Arbeitsordner  
+  - erfolgt still, ohne Dialoge oder Unterbrechungen
+
+- **Verbesserte Pfadbehandlung**
+  - Korrektur der relativen Pfaddarstellung (`.\` statt `.\.\`)  
+  - stabile Normalisierung für Ordnerpfade in der Dateiliste
+
+### Fixes – GUI‑Protokollierung
+
+- **Fehler beim Öffnen des Ordners behoben**
+  - `os.startfile()` konnte `/select,` nicht verarbeiten  
+  - ersetzt durch `subprocess.Popen("explorer /select,...")`
+
+- **Absturz bei leerem Logdateipfad behoben**
+  - vorher: `Permission denied: "."`  
+  - jetzt: automatische Erzeugung eines gültigen Logdateinamens
+
+- **Logdatei‑Pfad wird zuverlässig im GUI‑Label aktualisiert**
+
+
+## Neue CLI‑Engine (Masken, Auto‑Endungen, Logging, Append‑Modus)
 ### Neue Funktionen
 - **Maskenunterstützung für Input**  
   `--input` / `-i` akzeptiert jetzt `*` und `?` (z. B. `*.html`, `datei*.htm?`).  

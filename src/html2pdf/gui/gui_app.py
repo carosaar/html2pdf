@@ -1,6 +1,6 @@
 """
-GUI-Frontend (Tkinter) – Version 0.3.0
-Mit sofort abbrechbarer Konvertierung und Fortschrittsanzeige aus wkhtmltopdf.
+GUI-Frontend (Tkinter) – Version 0.5.0
+Mit sofort abbrechbarer Konvertierung, Fortschrittsanzeige und optionaler Protokollierung.
 """
 
 import threading
@@ -10,12 +10,16 @@ from pathlib import Path
 import os
 import time
 import signal
+import subprocess
+from datetime import datetime
 
 from html2pdf.core.file_utils import build_output_path
 from html2pdf.core.converter import start_wkhtmltopdf, run_and_wait
 from html2pdf.core.wkhtmltopdf_check import ensure_wkhtmltopdf_or_raise
 from html2pdf.version import __version__
 
+# GUI-Logger
+from html2pdf.gui.logger_gui import GuiLogger
 
 SPINNER_SPEED = 150  # ms – Animationstempo
 
@@ -37,13 +41,12 @@ def try_enable_drag_and_drop(widget, on_drop_callback):
 # GUI Hauptfunktion
 # ---------------------------------------------------------
 def run_gui():
-    # Erst normales Tk erzeugen (wichtig!)
     app = tk.Tk()
 
-    # TkinterDnD NACHTRÄGLICH aktivieren
+    # TkinterDnD aktivieren
     try:
         import tkinterdnd2 as tkdnd
-        tkdnd.TkinterDnD._require(app)   # <<< entscheidend: bindet DnD an bestehendes Root
+        tkdnd.TkinterDnD._require(app)
         DND_AVAILABLE = True
     except Exception:
         DND_AVAILABLE = False
@@ -51,7 +54,7 @@ def run_gui():
     app.title(f"HTML → PDF Converter {__version__}")
     app.geometry("900x650")
 
-    # App-Icon einbinden
+    # Icon
     try:
         icon_path = Path(__file__).resolve().parent.parent / "assets" / "html2pdf.ico"
         if icon_path.is_file():
@@ -59,7 +62,7 @@ def run_gui():
     except Exception:
         pass
 
-    # Style für auffälligen Konvertieren-Button
+    # Style
     style = ttk.Style()
     style.configure(
         "Convert.TButton",
@@ -67,25 +70,119 @@ def run_gui():
         padding=12,
     )
 
-    # Arbeitsordner bestimmen
     current_root = Path(os.getcwd())
 
-    files: list[dict] = []  # {"html": Path, "pdf": Path, "status": str}
+    files: list[dict] = []
     output_folder = tk.StringVar(value="")
     cancel_requested = False
-    current_process = None  # laufender wkhtmltopdf-Prozess
+    current_process = None
+
+    # Logging
+    log_enabled = tk.BooleanVar(value=False)
+    logfile_path = tk.StringVar(value="")
 
     # -----------------------------------------------------
     # Hilfsfunktionen
     # -----------------------------------------------------
+    
+    def show_logfile_window(path):
+        win = tk.Toplevel()
+        win.title("Protokollanzeige")
+        win.geometry("900x650")
+
+        # Icon übernehmen
+        try:
+            icon_path = Path(__file__).resolve().parent.parent / "assets" / "html2pdf.ico"
+            if icon_path.is_file():
+                win.iconbitmap(icon_path)
+        except Exception:
+            pass
+
+        # --- Hauptbereich: Text + Scrollbar ---
+        text_frame = ttk.Frame(win)
+        text_frame.pack(fill="both", expand=True)
+
+        text = tk.Text(text_frame, wrap="word", font=("Consolas", 10))
+        text.pack(side="left", fill="both", expand=True)
+
+        scrollbar = ttk.Scrollbar(text_frame, orient="vertical", command=text.yview)
+        scrollbar.pack(side="right", fill="y")
+        text.configure(yscrollcommand=scrollbar.set)
+
+        # Dateiinhalt laden
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+            text.insert("1.0", content)
+        except Exception as e:
+            text.insert("1.0", f"Fehler beim Lesen der Logdatei:\n{e}")
+
+        # Untere Button-Leiste (zentriert)
+        btn_frame = ttk.Frame(win)
+        btn_frame.pack(fill="x", pady=10)
+
+        inner = ttk.Frame(btn_frame)
+        inner.pack()
+
+        def open_file():
+            try:
+                os.startfile(path)
+            except Exception as e:
+                messagebox.showerror("Fehler", f"Die Datei konnte nicht geöffnet werden:\n{e}")
+
+        def open_folder():
+            try:
+                subprocess.Popen(f'explorer /select,"{path}"')
+            except Exception as e:
+                messagebox.showerror("Fehler", f"Ordner konnte nicht geöffnet werden:\n{e}")
+
+        ttk.Button(inner, text="📝 Protokoll öffnen", command=open_file).pack(side="left", padx=10)
+        ttk.Button(inner, text="📂 Ordner öffnen", command=open_folder).pack(side="left", padx=10)
+        ttk.Button(inner, text="❎ Schließen", command=win.destroy).pack(side="left", padx=10)
+    
+    def generate_default_logfile():
+        if not files:
+            return ""
+        first = files[0]["html"]
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        return str(first.parent / f"html2pdf_{ts}_log.txt")
+
+    def toggle_log_widgets():
+        if log_enabled.get():
+            log_button.config(state="normal")
+            if not logfile_path.get():
+                logfile_path.set(generate_default_logfile())
+            log_label.config(text=logfile_path.get())
+        else:
+            log_button.config(state="disabled")
+            log_label.config(text="")
+            logfile_path.set("")
+
+    def choose_logfile():
+        initial = logfile_path.get() or generate_default_logfile()
+        folder = Path(initial).parent
+        filename = Path(initial).name
+
+        path = filedialog.asksaveasfilename(
+            title="Logdatei wählen",
+            initialdir=str(folder),
+            initialfile=filename,
+            defaultextension=".txt",
+            filetypes=[("Textdateien", "*.txt")]
+        )
+        if path:
+            logfile_path.set(path)
+            log_label.config(text=path)
+
     def make_relative(path: Path) -> str:
         try:
             rel = path.relative_to(current_root)
-            rel_str = str(rel)
-            if rel_str == "":
+            rel_str = str(rel).replace("/", "\\")
+            if rel_str == "" or rel_str == ".":
                 return ".\\"
-            return ".\\" + rel_str.replace("/", "\\") + "\\"
+            return f".\\{rel_str}\\"
         except ValueError:
+            # Pfad liegt außerhalb des Arbeitsordners → absolut
             return str(path) + "\\"
 
     def refresh_tree():
@@ -172,7 +269,7 @@ def run_gui():
             "Download: https://wkhtmltopdf.org/downloads.html\n\n"
             "Hinweise:\n"
             "- Die CLI-Version kann über 'html2pdf --help' aufgerufen werden.\n"
-            "- Protokollierung ist in der CLI über die Option --log verfügbar.\n"
+            "- Protokollierung ist in der GUI optional verfügbar.\n"
         )
         messagebox.showinfo("Information", msg)
 
@@ -183,10 +280,8 @@ def run_gui():
 
         if current_process and current_process.poll() is None:
             try:
-                # Sauberer Abbruch wie CTRL+C
                 current_process.send_signal(signal.CTRL_BREAK_EVENT)
             except Exception:
-                # Fallback: hart killen
                 current_process.kill()
 
     def request_exit():
@@ -212,6 +307,29 @@ def run_gui():
         if not files:
             messagebox.showwarning("Hinweis", "Keine Dateien in der Liste.")
             return
+
+        # Logger vorbereiten
+        gui_logger = None
+        if log_enabled.get():
+
+            # Falls kein Pfad gesetzt → automatisch erzeugen
+            if not logfile_path.get():
+
+                ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+                if files:
+                    # Ordner der ersten Datei
+                    first = files[0]["html"]
+                    logfile_path.set(str(first.parent / f"html2pdf_{ts}_log.txt"))
+                else:
+                    # Fallback: aktueller Arbeitsordner
+                    logfile_path.set(str(current_root / f"html2pdf_{ts}_log.txt"))
+
+                # GUI aktualisieren
+                log_label.config(text=logfile_path.get())
+
+            gui_logger = GuiLogger(Path(logfile_path.get()))
+
 
         progress["maximum"] = len(files)
         progress["value"] = 0
@@ -240,11 +358,9 @@ def run_gui():
                 entry["status"] = "In Arbeit…"
                 app.after_idle(refresh_tree)
 
-                # Prozess starten
                 process = start_wkhtmltopdf(html_path, pdf_path)
                 current_process = process
 
-                # Live-Fortschritt aus stderr lesen
                 def read_stderr(proc):
                     for line in proc.stderr:
                         line = line.strip()
@@ -253,7 +369,6 @@ def run_gui():
 
                 threading.Thread(target=read_stderr, args=(process,), daemon=True).start()
 
-                # Prozess überwachen
                 while process.poll() is None:
                     if cancel_requested:
                         try:
@@ -268,15 +383,16 @@ def run_gui():
                 if cancel_requested:
                     break
 
-                # Ergebnis auslesen
                 code, stdout, stderr = run_and_wait(process)
 
                 if code != 0:
-                    # stderr ist hier leer, aber wir lassen die Struktur
-                    first_line = "Unbekannter Fehler"
-                    entry["status"] = f"Fehler: {first_line}"
+                    entry["status"] = "Fehler: Unbekannter Fehler"
                 else:
                     entry["status"] = "Fertig ✔"
+
+                # Logging
+                if gui_logger:
+                    gui_logger.add_entry(html_path, pdf_path, entry["status"])
 
                 if idx % 20 == 0:
                     app.after_idle(refresh_tree)
@@ -288,6 +404,20 @@ def run_gui():
                 progress.stop()
                 progress.config(mode="determinate")
                 progress["value"] = progress["maximum"]
+
+
+                if gui_logger:
+                    gui_logger.write_log()
+
+                    if messagebox.askyesno(
+                        "Protokoll erstellt",
+                        "Die Konvertierung ist abgeschlossen.\n"
+                        "Es wurde eine Protokolldatei erstellt.\n\n"
+                        "Möchten Sie die Protokolldatei jetzt ansehen?"
+                    ):
+                        show_logfile_window(logfile_path.get())
+
+
 
                 if cancel_requested:
                     status_var.set("Konvertierung abgebrochen.")
@@ -327,10 +457,35 @@ def run_gui():
     ttk.Button(top_frame, text="❌ Ausgewählte entfernen", command=remove_selected).pack(side="left", padx=(5, 0))
     ttk.Button(top_frame, text="🗑️ Liste leeren", command=clear_list).pack(side="left", padx=(5, 0))
 
-    exit_button = ttk.Button(top_frame, text="Beenden", command=request_exit)
+    exit_button = ttk.Button(top_frame, text="❎ Beenden", command=request_exit)
     exit_button.pack(side="right")
 
     ttk.Button(top_frame, text="ℹ️ INFO", command=show_info).pack(side="right", padx=(0, 5))
+
+    # -----------------------------------------------------
+    # Logging-Zeile direkt unterhalb der oberen Buttons
+    # -----------------------------------------------------
+    log_frame = ttk.Frame(main_frame)
+    log_frame.pack(fill="x", pady=(5, 5))
+
+    log_check = ttk.Checkbutton(
+        log_frame,
+        text="📝 Protokoll",
+        variable=log_enabled,
+        command=lambda: toggle_log_widgets()
+    )
+    log_check.pack(side="left")
+
+    log_button = ttk.Button(
+        log_frame,
+        text="Logdatei wählen…",
+        command=lambda: choose_logfile(),
+        state="disabled"
+    )
+    log_button.pack(side="left", padx=(10, 0))
+
+    log_label = ttk.Label(log_frame, text="", foreground="gray")
+    log_label.pack(side="left", padx=(10, 0))
 
     # Tabelle + Scrollbar
     table_frame = ttk.Frame(main_frame)
@@ -398,7 +553,7 @@ def run_gui():
     cancel_button.pack(side="left", padx=(10, 0))
 
     # -----------------------------------------------------
-    # Fenster schließen abfangen – jetzt existieren alle Widgets
+    # Fenster schließen abfangen
     # -----------------------------------------------------
     def on_close():
         if convert_button["state"] == "disabled":
