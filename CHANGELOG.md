@@ -6,6 +6,55 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
 
+## 0.5.0 – Neue CLI‑Engine (Masken, Auto‑Endungen, Logging, Append‑Modus)
+
+### Neue Funktionen
+- **Maskenunterstützung für Input**  
+  `--input` / `-i` akzeptiert jetzt `*` und `?` (z. B. `*.html`, `datei*.htm?`).  
+  Wenn keine Endung angegeben ist, wird `.html` automatisch ergänzt.
+
+- **Automatische Endungsergänzung**  
+  - Input ohne Endung → `.html`  
+  - Logdatei ohne Endung → `.txt`
+
+- **Neues Logging‑System**  
+  - Logging optional, aber wenn aktiviert, ist ein Dateiname Pflicht  
+  - Logdatei wird immer im Output‑Verzeichnis gespeichert  
+  - Kopfbereich mit Datum, Input‑Maske, Output‑Pfad und Logdateiname  
+  - Ergebnisliste: `input.html;output.pdf;Status`  
+  - Zusammenfassung am Ende: Anzahl Erfolge / Fehler  
+  - Alphabetische Sortierung der Input‑Dateien für reproduzierbare Logs
+
+- **Append‑Modus**  
+  - `--logappend` / `-la` hängt an bestehende Logdateien an  
+  - `--log` / `-l` überschreibt bestehende Logdateien  
+  - `-l` und `-la` schließen sich gegenseitig aus
+
+- **Verbesserte Output‑Logik**  
+  - `--output` optional  
+  - Wenn nicht angegeben → Ausgabe in das Verzeichnis der Input‑Dateien  
+  - Output ist immer ein Verzeichnis  
+  - Verzeichnis wird automatisch erstellt  
+  - PDF‑Name = Basename + `.pdf`  
+  - PDFs werden ohne Rückfrage überschrieben
+
+### Verbesserungen
+- **Silent‑Mode**  
+  - Unterdrückt alle Konsolenausgaben  
+  - Logging ist weiterhin möglich  
+  - Kein Deadlock (stderr → DEVNULL)
+
+- **Konsolenausgabe im non‑silent‑Modus**  
+  - Fortschritt wie bisher  
+  - Erfolgs‑/Fehlermeldungen pro Datei  
+  - Zusammenfassung am Ende
+
+### Intern
+- CLI‑Engine komplett neu strukturiert  
+- Logging‑Formatierer modularisiert (Vorbereitung für GUI‑Logging)  
+- Einheitliche Fehlerbehandlung und alphabetische Dateisortierung
+
+
 ## 0.4.1 – 2026‑04‑13
 ### Fixes
 - **Deadlock bei großen HTML‑Dateien behoben**  
