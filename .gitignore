@@ -57,3 +57,4 @@ devdoc/*
 htmlcov/
 .cache/
 pytest_cache/
+*.pdf

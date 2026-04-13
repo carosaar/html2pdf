@@ -1,17 +1,15 @@
 """
-Kernlogik für die HTML→PDF-Konvertierung (Version 0.3.0).
-Mit sofort abbrechbaren Prozessen.
+Kernlogik für die HTML→PDF-Konvertierung (Version 0.3.x).
+Mit sofort abbrechbaren Prozessen und optionaler stderr-Erfassung.
 """
 
 import subprocess
+import signal
 from pathlib import Path
 from html2pdf.core.wkhtmltopdf_check import ensure_wkhtmltopdf_or_raise
 
 
-import subprocess
-import signal
-
-def start_wkhtmltopdf(input_file: Path, output_file: Path):
+def start_wkhtmltopdf(input_file: Path, output_file: Path, capture_stderr=True):
     wkhtml = ensure_wkhtmltopdf_or_raise()
 
     cmd = [
@@ -23,17 +21,15 @@ def start_wkhtmltopdf(input_file: Path, output_file: Path):
 
     process = subprocess.Popen(
         cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE if capture_stderr else subprocess.DEVNULL,
         text=True,
-        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP  # <<< WICHTIG
+        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
     )
 
     return process
 
+
 def run_and_wait(process):
-    """
-    Wartet auf den Prozess und gibt (returncode, stdout, stderr) zurück.
-    """
-    stdout, stderr = process.communicate()
-    return process.returncode, stdout, stderr
+    process.wait()
+    return process.returncode, "", ""

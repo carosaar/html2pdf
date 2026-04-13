@@ -1,6 +1,6 @@
 """
 GUI-Frontend (Tkinter) – Version 0.3.0
-Mit sofort abbrechbarer Konvertierung.
+Mit sofort abbrechbarer Konvertierung und Fortschrittsanzeige aus wkhtmltopdf.
 """
 
 import threading
@@ -9,6 +9,7 @@ from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 import os
 import time
+import signal
 
 from html2pdf.core.file_utils import build_output_path
 from html2pdf.core.converter import start_wkhtmltopdf, run_and_wait
@@ -188,7 +189,6 @@ def run_gui():
                 # Fallback: hart killen
                 current_process.kill()
 
-
     def request_exit():
         if convert_button["state"] == "disabled":
             messagebox.showwarning("Hinweis", "Bitte zuerst die Konvertierung abbrechen.")
@@ -244,6 +244,15 @@ def run_gui():
                 process = start_wkhtmltopdf(html_path, pdf_path)
                 current_process = process
 
+                # Live-Fortschritt aus stderr lesen
+                def read_stderr(proc):
+                    for line in proc.stderr:
+                        line = line.strip()
+                        if line:
+                            app.after_idle(lambda l=line: status_var.set(l))
+
+                threading.Thread(target=read_stderr, args=(process,), daemon=True).start()
+
                 # Prozess überwachen
                 while process.poll() is None:
                     if cancel_requested:
@@ -263,7 +272,8 @@ def run_gui():
                 code, stdout, stderr = run_and_wait(process)
 
                 if code != 0:
-                    first_line = stderr.splitlines()[0] if stderr else "Unbekannter Fehler"
+                    # stderr ist hier leer, aber wir lassen die Struktur
+                    first_line = "Unbekannter Fehler"
                     entry["status"] = f"Fehler: {first_line}"
                 else:
                     entry["status"] = "Fertig ✔"

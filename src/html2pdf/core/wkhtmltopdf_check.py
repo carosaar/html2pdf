@@ -22,16 +22,16 @@ def find_wkhtmltopdf() -> str | None:
     internal_exe = base / "bin" / "wkhtmltopdf.exe"
 
     # Debug-Ausgabe
-    print("DEBUG: Suche wkhtmltopdf in:", internal_exe)
+    # print("DEBUG: Suche wkhtmltopdf in:", internal_exe)
 
     # 1. Interne Version
     if internal_exe.is_file():
-        print("DEBUG: Interne wkhtmltopdf.exe gefunden:", internal_exe)
+        # print("DEBUG: Interne wkhtmltopdf.exe gefunden:", internal_exe)
         return str(internal_exe)
 
     # 2. Systeminstallation
     system_exe = shutil.which("wkhtmltopdf")
-    print("DEBUG: Systeminstallation:", system_exe)
+    # print("DEBUG: Systeminstallation:", system_exe)
 
     if system_exe:
         return system_exe
@@ -42,7 +42,7 @@ def find_wkhtmltopdf() -> str | None:
 def ensure_wkhtmltopdf_or_raise() -> str:
     """Gibt den Pfad zurück oder wirft eine Exception."""
     path = find_wkhtmltopdf()
-    print("DEBUG: Finaler wkhtmltopdf-Pfad:", path)
+    # print("DEBUG: Finaler wkhtmltopdf-Pfad:", path)
 
     if path is None:
         raise RuntimeError(

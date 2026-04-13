@@ -15,12 +15,21 @@ def setup_logger(logfile=None):
 
     # Verhindert doppelte Handler bei mehrfachen Aufrufen
     if not _logger_initialized:
-        handler = logging.FileHandler(logfile) if logfile else logging.StreamHandler()
-        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
 
-        logger.info(f"Starte html2pdf Version {__version__}")
+        # Nur Datei-Logging, niemals stdout
+        if logfile:
+            handler = logging.FileHandler(logfile, encoding="utf-8")
+            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+            handler.setFormatter(formatter)
+            logger.addHandler(handler)
+
+            # Startmeldung nur ins Logfile
+            logger.info(f"Starte html2pdf Version {__version__}")
+
+        # Wenn kein logfile → KEIN Handler, KEINE Ausgabe
+        else:
+            logger.handlers.clear()
+
         _logger_initialized = True
 
     return logger

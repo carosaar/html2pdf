@@ -6,6 +6,41 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
 
+## 0.4.1 – 2026‑04‑13
+### Fixes
+- **Deadlock bei großen HTML‑Dateien behoben**  
+  - Ursache: wkhtmltopdf erzeugt umfangreiche stderr‑Ausgaben, die bei Nutzung von `PIPE` ohne kontinuierliches Auslesen zum Pufferüberlauf führten.  
+  - Lösung: stderr wird nun nur im GUI‑ und nicht‑silent‑CLI‑Modus gepuffert und in einem separaten Thread ausgelesen.  
+  - CLI - Silent‑Mode nutzt `stderr=DEVNULL`, wodurch keine Ausgabe entsteht und kein Deadlock mehr möglich ist.
+
+- **Silent‑Mode vollständig korrigiert**  
+  - Keine Fortschrittsmeldungen mehr auf stdout/stderr  
+  - Keine Startmeldung mehr („Starte html2pdf Version …“)  
+  - Kein implizites Flushen von stderr mehr  
+  - Prozess läuft jetzt vollständig geräuschlos durch
+
+- **Logging überarbeitet und erweitert** (dies wird jedoch nochmal ganz neu geplant)
+  - Logdatei wird **neu geschrieben**, nicht mehr angehängt  
+  - Automatische Logdatei: `<basename>_log.txt`  
+  - Pro Datei werden nun protokolliert:
+    - Vollständiger Pfad der Eingabedatei  
+    - Vollständiger Pfad der erzeugten PDF  
+    - Fehler mit vollständigem Pfad  
+    - Trennzeile `---` nach jeder Datei  
+
+- **GUI: Live‑Fortschrittsanzeige aus wkhtmltopdf**
+  - stderr‑Ausgabe wird in Echtzeit in der Statuszeile angezeigt  
+  - Kein Deadlock mehr  
+  - Abbruchfunktion bleibt sofort wirksam  
+  - Große Dateien funktionieren zuverlässig
+
+### Intern
+- `converter.py` erweitert um `capture_stderr`‑Parameter  
+- CLI‑Verarbeitung neu strukturiert  
+- logger.py überarbeitet: keine stdout‑Handler mehr, Startmeldung nur bei Datei‑Logging  
+  
+---
+ 
 ## 0.4.0 – Eingebettete wkhtmltopdf‑Engine (Standalone‑Modus) 2026-04-12
 
 ### Neu
