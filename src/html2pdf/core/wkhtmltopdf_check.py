@@ -9,32 +9,30 @@ import sys
 
 
 def _get_base_path() -> Path:
-    """
-    Ermittelt den Basisordner, abhängig davon,
-    ob das Programm als PyInstaller-EXE läuft oder normal.
-    """
+    """Ermittelt den Basisordner für PyInstaller oder Entwicklungsmodus."""
     if hasattr(sys, "_MEIPASS"):
-        # PyInstaller: extrahierter Temp-Ordner
         return Path(sys._MEIPASS) / "html2pdf"
     else:
-        # Entwicklungsumgebung: src/html2pdf/
         return Path(__file__).resolve().parent.parent
 
 
 def find_wkhtmltopdf() -> str | None:
-    """
-    Sucht zuerst die interne portable Version,
-    danach die Systeminstallation.
-    """
+    """Sucht zuerst die interne portable Version, danach die Systeminstallation."""
     base = _get_base_path()
     internal_exe = base / "bin" / "wkhtmltopdf.exe"
 
+    # Debug-Ausgabe
+    print("DEBUG: Suche wkhtmltopdf in:", internal_exe)
+
     # 1. Interne Version
     if internal_exe.is_file():
+        print("DEBUG: Interne wkhtmltopdf.exe gefunden:", internal_exe)
         return str(internal_exe)
 
     # 2. Systeminstallation
     system_exe = shutil.which("wkhtmltopdf")
+    print("DEBUG: Systeminstallation:", system_exe)
+
     if system_exe:
         return system_exe
 
@@ -42,11 +40,10 @@ def find_wkhtmltopdf() -> str | None:
 
 
 def ensure_wkhtmltopdf_or_raise() -> str:
-    """
-    Gibt den Pfad zu wkhtmltopdf zurück oder wirft eine Exception
-    mit einer klaren Fehlermeldung.
-    """
+    """Gibt den Pfad zurück oder wirft eine Exception."""
     path = find_wkhtmltopdf()
+    print("DEBUG: Finaler wkhtmltopdf-Pfad:", path)
+
     if path is None:
         raise RuntimeError(
             "wkhtmltopdf wurde nicht gefunden.\n\n"
