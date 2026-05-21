@@ -6,6 +6,31 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
 
+## **0.5.2 – Verbesserte PDF‑Erzeugung (A4-Format & Encoding)**
+
+### ✨ Neu
+- **Standard-Seitenformat A4 für alle Konvertierungen**
+  - `wkhtmltopdf` wird jetzt mit `--page-size A4` und `--orientation Portrait` aufgerufen.
+  - Das physische Seitenformat der erzeugten PDFs ist damit konsistent und unabhängig von CSS- oder Browser-Voreinstellungen.
+
+- **Explizites UTF‑8-Encoding**
+  - Aufruf von `wkhtmltopdf` nun mit `--encoding utf-8`.
+  - Umlaute und Sonderzeichen werden dadurch stabil und reproduzierbar korrekt gerendert.
+
+### 🛠️ Verbessert
+- **Dokumentierte wkhtmltopdf-Konfiguration in `converter.py`**
+  - Ausführlicher Kommentarblock erläutert:
+    - Zweck der Optionen `--page-size`, `--orientation`, `--encoding` und `--enable-local-file-access`
+    - Gründe für die Festlegung auf A4 und UTF‑8
+  - Erleichtert Wartung und zukünftige Anpassungen der Konvertierungslogik.
+
+### 🔧 Intern
+- `converter.py` angepasst:
+  - Erweiterung der `cmd`-Liste um:
+    - `--page-size`, `"A4"`
+    - `--orientation`, `"Portrait"`
+    - `--encoding`, `"utf-8"`
+  - Keine Änderungen an CLI- oder GUI-Schnittstellen notwendig (Verhalten ist abwärtskompatibel.
 
 ## **0.5.1 – Bugfix: GUI‑Protokollierung zählt Erfolge korrekt**
 
