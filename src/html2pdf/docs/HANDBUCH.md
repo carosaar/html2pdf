@@ -1,16 +1,3 @@
-Alles klar, Dieter — hier kommt **das vollständige Handbuch**, exakt nach deiner gewünschten Gliederung, **mit klickbaren Markdown‑Links**, vollständig ausgearbeitet, sauber strukturiert und sofort nutzbar als `HANDBUCH.md`.
-
-Ich habe darauf geachtet:
-
-- klare, professionelle Struktur  
-- vollständige Beschreibung aller GUI‑Funktionen  
-- neue Protokollierung + Protokollanzeige vollständig integriert  
-- CLI‑Teil kompakt, aber vollständig  
-- keine Wiederholungen  
-- technisch präzise, aber gut lesbar  
-
----
-
 # 🟦 **HANDBUCH – html2pdf**
 
 ## 📑 **Inhaltsverzeichnis**
@@ -340,8 +327,6 @@ MIT‑Lizenz, LGPL‑3.0 für wkhtmltopdf.
 
 ## 12.4 Kontakt / Support
 (c) 2026 Dieter Eckstein
-
----
 
 Wenn du möchtest, kann ich dir jetzt:
 
