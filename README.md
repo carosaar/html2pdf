@@ -5,7 +5,7 @@ GUI‑ und CLI‑Tool zur HTML‑zu‑PDF‑Konvertierung mit eingebetteter wkht
 **html2pdf** ist ein schnelles, portables Werkzeug zur Konvertierung von HTML‑Dateien in PDF‑Dokumente.  
 Es bietet sowohl eine **grafische Benutzeroberfläche (GUI)** als auch eine **Kommandozeilen‑Schnittstelle (CLI)** und enthält eine **portable Version von wkhtmltopdf**, sodass **keine Installation** erforderlich ist.
 
-Ein Handbuch findet sich im Verzeichnis: src/html2pdf/docs/HANDBUCH.md
+Ein Handbuch findet sich im Verzeichnis: [src/html2pdf/docs](src/html2pdf/docs/HANDBUCH.md)
 
 ---
 
