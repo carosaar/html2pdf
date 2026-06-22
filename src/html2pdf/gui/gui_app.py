@@ -264,9 +264,10 @@ def run_gui():
         msg = (
             "HTML → PDF Converter\n\n"
             "Dieses Programm verwendet wkhtmltopdf zur Konvertierung.\n"
-            "Bitte stellen Sie sicher, dass wkhtmltopdf installiert ist\n"
-            "und im PATH liegt.\n\n"
-            "Download: https://wkhtmltopdf.org/downloads.html\n\n"
+            "Es wird mit einer portablen Version von wkhtmltopdf geliefert.\n"
+            "Eine vorherige Installation von wkhtmltopdf ist nicht erforderlich.\n\n"
+            "Die Lizensbedingungen von wkhtmltopdf finden Sie hier:\n"
+            "https://github.com/carosaar/html2pdf/blob/main/LISENSES/wkhtmltopdf-LGPL-3.0.txt\n\n"
             "Hinweise:\n"
             "- Die CLI-Version kann über 'html2pdf --help' aufgerufen werden.\n"
             "- Protokollierung ist in der GUI optional verfügbar.\n"
