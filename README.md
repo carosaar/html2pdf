@@ -1,205 +1,125 @@
-# 🟦 **README**  
-html2pdf – Version 0.5.0  
-GUI‑ und CLI‑Tool zur HTML‑zu‑PDF‑Konvertierung mit eingebetteter wkhtmltopdf‑Engine
+# 📄 **README.md**
 
-**html2pdf** ist ein schnelles, portables Werkzeug zur Konvertierung von HTML‑Dateien in PDF‑Dokumente.  
-Es bietet sowohl eine **grafische Benutzeroberfläche (GUI)** als auch eine **Kommandozeilen‑Schnittstelle (CLI)** und enthält eine **portable Version von wkhtmltopdf**, sodass **keine Installation** erforderlich ist.
+html2pdf  Version 0.5.2
+Ein einfacher HTML‑zu‑PDF‑Konverter mit GUI und CLI, basierend auf `wkhtmltopdf`.
 
-Ein Handbuch findet sich im Verzeichnis: [src/html2pdf/docs](src/html2pdf/docs/HANDBUCH.md)
+Das Projekt bietet:
+- eine komfortable **GUI** (Drag & Drop, Batch‑Verarbeitung)
+- eine **CLI** für automatisierte Konvertierungen
+- eine portable **Windows‑EXE** (PyInstaller)
+- eingebettete `wkhtmltopdf`‑Binaries für Offline‑Nutzung
 
----
-
-# 🚀 Neuerungen in Version 0.5.0 (GUI)
-
-### 📝 Vollständig integrierte Protokollierung
-- Protokollierung kann per Checkbox aktiviert werden  
-- Nutzer kann eine Logdatei auswählen  
-- Wenn keine Logdatei gesetzt ist, erzeugt die GUI **automatisch** eine:
-  - bei vorhandenen Dateien → im Ordner der **ersten HTML‑Datei**  
-  - sonst → im **aktuellen Arbeitsordner**  
-- Erzeugung erfolgt **still**, ohne Dialoge oder Unterbrechungen  
-- Logdatei enthält:
-  - Kopfbereich mit Datum  
-  - HTML‑Pfad, PDF‑Pfad, Status  
-  - Zusammenfassung am Ende  
-
-### 🪟 Neue Protokollanzeige
-- eigenes Fenster mit App‑Icon  
-- Monospace‑Darstellung  
-- Scrollbar  
-- Buttons:
-  - **📝 Protokoll öffnen** → öffnet die Datei im Standardeditor  
-  - **📂 Ordner öffnen** → öffnet Explorer und **markiert die Logdatei**  
-  - **❎ Schließen**
-
-### 📂 Explorer‑Integration
-- Ordner öffnen nutzt jetzt:
-  ```
-  explorer /select,"<pfad>"
-  ```
-- funktioniert zuverlässig mit:
-  - langen Pfaden  
-  - Leerzeichen  
-  - Netzwerkpfaden (UNC)  
-
-### 🧭 Pfadkorrekturen
-- relative Pfade werden korrekt angezeigt (`.\` statt `.\.\`)  
-- stabile Normalisierung der Ordnerpfade in der Dateiliste  
+## Das Benutzerhandbuch [findet sich unter src/html2pdf/docs](src/html2pdf/docs/HANDBUCH.md)
 
 ---
 
-# 🖥️ GUI‑Funktionen
-
-### 📁 Dateiverwaltung
-- Mehrfachauswahl von HTML‑Dateien  
-- Drag & Drop Unterstützung  
-- Doppelklick zum Entfernen  
-- Liste leeren  
-- Anzeige des aktuellen Arbeitsordners  
-- relative Pfade innerhalb des Arbeitsordners  
-- automatische Pfadkorrektur  
-
-### 🧭 Ausgabeordner
-- frei wählbar  
-- dynamische Aktualisierung der PDF‑Zielpfade  
-- Ausgabeordner wird automatisch erstellt  
-- PDFs werden ohne Rückfrage überschrieben  
-
-### ⚙️ Konvertierung
-- Nutzung der eingebetteten wkhtmltopdf‑Engine  
-- Live‑Statusanzeige (stderr‑Ausgabe in Echtzeit)  
-- Fortschrittsbalken mit ruhiger Animation  
-- sofort wirksamer Abbrechen‑Button  
-- GUI bleibt auch bei großen Dateimengen reaktionsfähig  
-- Fehlerdialoge mit erster stderr‑Zeile  
-
-### 📝 Protokollierung (Details)
-- optional aktivierbar  
-- automatische Logdatei‑Erzeugung  
-- Logdatei wird neu geschrieben  
-- Protokollanzeige mit Editor‑ und Explorer‑Integration  
-
-Starten:
-
-```bash
-html2pdf
-```
-
-oder:
-
-```bash
-python -m html2pdf.gui
-```
-
----
-
-# 🖥️ CLI‑Funktionen
-
-Beispiel:
-
-```bash
-html2pdf --input input.html --output out/ --log
-```
-
-Optionen:
-
-```
---input <datei/ordner>
---output <datei/ordner>
---silent
---log <optional: logfile>
-```
-
-Silent‑Mode:
-
-- keine Ausgabe  
-- kein Logging  
-- kein Fortschritt  
-
----
-
-# 🛠️ Eingebettete wkhtmltopdf‑Engine
-
-html2pdf enthält eine portable Version von wkhtmltopdf im Ordner:
-
-```
-html2pdf/bin/
-```
-
-Vorteile:
-
-- keine Installation notwendig  
-- keine PATH‑Einträge  
-- portabel  
-- funktioniert ohne Administratorrechte  
-
----
-
-# 📦 Installation
+## 📦 Installation nach dem Klonen
 
 ### 1. Repository klonen
-
 ```bash
 git clone https://github.com/carosaar/html2pdf.git
 cd html2pdf
 ```
 
-### 2. Abhängigkeiten installieren
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Paket installieren
+### 2. Paket lokal installieren
+Das Projekt verwendet ein klassisches `src/`‑Layout.  
+Die Paketinstallation erfolgt mit:
 
 ```bash
 pip install .
 ```
 
+Damit wird das Paket in die Python‑Umgebung eingebunden und die Startbefehle erzeugt.
+
 ---
 
-# 📁 Projektstruktur
+## 🚀 Starten der Anwendung
 
-```text
-html2pdf/
- ├── core/
- │    ├── converter.py
- │    ├── file_utils.py
- │    ├── wkhtmltopdf_check.py
- │
- ├── gui/
- │    └── gui_app.py
- │
- ├── cli/
- │    └── cli_app.py
- │
- ├── assets/
- │    └── html2pdf.ico
- │
- ├── bin/
- │    ├── wkhtmltopdf.exe
- │    └── libwkhtmltox.dll
- │
- ├── version.py
- └── ...
+### GUI starten
+```bash
+html2pdf
+```
+
+oder alternativ:
+
+```bash
+python -m html2pdf
+```
+
+### CLI starten
+```bash
+html2pdf --input input.html --output out/
+```
+
+Weitere CLI‑Optionen:
+```bash
+html2pdf --help
 ```
 
 ---
 
-# 📄 Lizenz
+## 📁 Projektstruktur
 
-- html2pdf: MIT‑Lizenz  
-- wkhtmltopdf: LGPL‑3.0 (unveränderte portable Version wird mitgeliefert)
+```
+src/
+    html2pdf/
+        __init__.py
+        __main__.py
+        version.py
+        core/
+            converter.py
+            file_utils.py
+            wkhtmltopdf_check.py
+        gui/
+            gui_app.py
+        cli/
+            cli_app.py
+        assets/
+            html2pdf.ico
+        bin/
+            wkhtmltopdf.exe
+            libwkhtmltox.dll
+```
+
+- **GUI‑Startpunkt:** `gui/gui_app.py`  
+- **CLI‑Startpunkt:** `cli/cli_app.py`  
+- **Python‑Startpunkt:** `__main__.py`  
+- **wkhtmltopdf‑Binaries:** `bin/`  
 
 ---
 
-# 👤 Autor
+## 🛠 PyInstaller‑Build
 
-(c) 2026 Dieter Eckstein
+Das Projekt enthält eine funktionierende `html2pdf.spec`.  
+Der Build erfolgt mit:
+
+```bash
+pyinstaller html2pdf.spec --noconfirm
+```
+
+Die fertige EXE liegt anschließend unter:
+
+```
+dist/html2pdf.exe
+```
+
+Die EXE enthält:
+- GUI
+- eingebettete wkhtmltopdf‑Binaries
+- Icon
+- alle benötigten Module
 
 ---
 
-# ⭐ Feedback
 
-Wenn dir das Tool gefällt, freue ich mich über ein ⭐ auf GitHub!
+## 📜 MIT Lizenz
+Dieses Projekt verwendet die Lizenz aus der Datei `LICENSE`.  
+Die eingebetteten wkhtmltopdf‑Binaries stehen unter [LGPL](LISENSES/wkhtmltopdf-LGPL-3.0.txt)
 
+---
+
+## 🤝 Mitwirken
+Pull Requests und Verbesserungen sind willkommen.
+
+## Autor
+(c) 2026 by Dieter Eckstein
