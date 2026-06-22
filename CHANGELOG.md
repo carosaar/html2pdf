@@ -6,6 +6,12 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und das Projekt folgt der [Semantic Versioning](https://semver.org/) Spezifikation.
 
 
+## 1.0.0 - Dokumentation (README.md und Handbuch.md) angepasst
+
+### 🛠️ Verbessert
+- Fehler in [**README.md**](README.md) behoben und 
+- [**Handbuch**](src/html2pdf/docs/HANDBUCH.md) anwenderorientiert gefasst. 
+
 ## **0.5.2 – Verbesserte PDF‑Erzeugung (A4-Format & Encoding)**
 
 ### ✨ Neu

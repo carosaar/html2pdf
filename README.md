@@ -1,6 +1,7 @@
 # 📄 **README.md**
 
-html2pdf  Version 0.5.2
+html2pdf  Version 1.0.0 vom 22.06.2026
+
 Ein einfacher HTML‑zu‑PDF‑Konverter mit GUI und CLI, basierend auf `wkhtmltopdf`.
 
 Das Projekt bietet:
