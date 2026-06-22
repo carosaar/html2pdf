@@ -2,18 +2,30 @@
 
 ## 📑 **Inhaltsverzeichnis**
 
-1. [Einleitung](#1-einleitung)  
-2. [Installation & Start](#2-installation--start)  
-3. [Überblick über die Benutzeroberfläche (GUI)](#3-überblick-über-die-benutzeroberfläche-gui)  
-4. [Arbeiten mit Dateien](#4-arbeiten-mit-dateien)  
-5. [Ausgabeoptionen](#5-ausgabeoptionen)  
-6. [Konvertierungsvorgang](#6-konvertierungsvorgang)  
-7. [Protokollierung (GUI)](#7-protokollierung-gui)  
-8. [Protokollanzeige](#8-protokollanzeige)  
-9. [Kommandozeilen‑Modus (CLI)](#9-kommandozeilen-modus-cli)  
-10. [Fehlerbehebung (Troubleshooting)](#10-fehlerbehebung-troubleshooting)  
-11. [Tipps & Best Practices](#11-tipps--best-practices)  
-12. [Anhang](#12-anhang)  
+- [🟦 **HANDBUCH – html2pdf**](#-handbuch--html2pdf)
+  - [📑 **Inhaltsverzeichnis**](#-inhaltsverzeichnis)
+- [1. Einleitung](#1-einleitung)
+  - [Zielgruppe:](#zielgruppe)
+- [2. Installation \& Start](#2-installation--start)
+  - [✨ Bezugsquelle](#-bezugsquelle)
+  - [2.3 Programmstart](#23-programmstart)
+- [3. Überblick über die Benutzeroberfläche (GUI)](#3-überblick-über-die-benutzeroberfläche-gui)
+  - [Start der Anwendung](#start-der-anwendung)
+  - [HTML‑Dateien hinzufügen](#htmldateien-hinzufügen)
+  - [Ausgabeordner festlegen](#ausgabeordner-festlegen)
+  - [Weitere Funktionen und Schalter](#weitere-funktionen-und-schalter)
+  - [Konvertierung starten](#konvertierung-starten)
+  - [Sitzung beenden](#sitzung-beenden)
+- [Performance‑Hinweise](#performancehinweise)
+- [Protokollierung](#protokollierung)
+- [Kommandozeilen‑Modus (CLI)](#kommandozeilenmodus-cli)
+  - [Parameterübersicht](#parameterübersicht)
+  - [Beispiele](#beispiele)
+  - [Silent‑Mode](#silentmode)
+  - [Logging im CLI](#logging-im-cli)
+- [Fehlerbehebung (Troubleshooting)](#fehlerbehebung-troubleshooting)
+  - [Lizenztexte](#lizenztexte)
+  - [12.4 Kontakt / Support](#124-kontakt--support)
 
 ---
 
@@ -27,218 +39,174 @@ Es bietet:
 - eine **eingebettete portable wkhtmltopdf‑Engine**  
 - keine Installation, keine Administratorrechte  
 
-**Zielgruppe:**  
+## Zielgruppe:
 Anwender, die HTML‑Dateien schnell, zuverlässig und ohne Konfigurationsaufwand in PDF umwandeln möchten.
 
 **Systemvoraussetzungen:**  
 - Windows 10 oder neuer  
 - Python 3.10+ (bei Nutzung aus dem Quellcode)  
-- Keine Installation von wkhtmltopdf erforderlich  
+- Keine Installation von wkhtmltopdf erforderlich. Eine installierte wkhtmltopdf-Version wird bevorzugt genutzt.
 
 ---
 
 # 2. Installation & Start
 
-## 2.1 Repository klonen
 
-```bash
+## ✨ Bezugsquelle
+
+Unter **[https://github.com/carosaar/html2pdf](https://github.com/carosaar/html2pdf) – Releases** steht eine sofort lauffähige Windows‑Version (`html2pdf.exe`) zur Verfügung.
+
+Speichern Sie die erzeugte EXE in einem beliebigen Verzeichnis und ergänzen Sie diesen Speicherort in der **PATH‑Umgebungsvariable**, um die Anwendung bequem über die Kommandozeile starten zu können.
+
+**Alternativ** kann das Repository auch selbst geklont werden:
+
+```
 git clone https://github.com/carosaar/html2pdf.git
-cd html2pdf
 ```
 
-## 2.2 Abhängigkeiten installieren
+Anschließend lässt sich die EXE gemäß den Hinweisen in der [README.md](../../../README.md) selbst erzeugen.  
+Die Erstellung lauffähiger Versionen für andere Betriebssysteme wurde bislang weder vorbereitet noch getestet, sollte grundsätzlich aber möglich sein.
 
-```bash
-pip install -r requirements.txt
-```
-
-## 2.3 Start der GUI
+## 2.3 Programmstart
 
 ```bash
 html2pdf
 ```
+startet die grafische Oberfläche.
 
-oder:
+Das Programm kann jedoch auch auf der Kommandozeile der Konsole oder in batchprogrammen genutzt werden. Dazu werden die zu konvertierende/n Datei/n als Parameter übergeben. Dazu ist die Syntax zu beachten, die über `html2pdf --help` angezeigt wird:
+![alt text](Screenshot_CLI.png)
 
-```bash
-python -m html2pdf.gui
-```
-
-## 2.4 Start der CLI
-
-```bash
-python -m html2pdf.cli
-```
-
-## 2.5 Portable Nutzung
-
-Die portable wkhtmltopdf‑Engine befindet sich in:
-
-```
-html2pdf/bin/
-```
-
-Keine Installation notwendig.
 
 ---
 
 # 3. Überblick über die Benutzeroberfläche (GUI)
 
-Die GUI besteht aus:
+![alt text](Screenshot_GUI.png)
 
-- **Buttonleiste oben** (Dateien hinzufügen, Ausgabeordner wählen, Liste leeren, Beenden)  
-- **Dateiliste** (HTML‑Dateien, Ordner, Ziel‑PDF, Status)  
-- **Arbeitsordneranzeige**  
-- **Konvertieren‑Button**  
-- **Fortschrittsbalken**  
-- **Statuszeile**  
-- **Protokollierungsoptionen**  
+## Start der Anwendung
 
----
+Die GUI wird über die ausführbare Datei gestartet:
 
-# 4. Arbeiten mit Dateien
+```
+html2pdf.exe
+```
 
-## 4.1 HTML‑Dateien hinzufügen
-- über Dateidialog  
-- per Drag & Drop  
+Nach dem Start erscheint das Hauptfenster mit folgenden Bereichen:
 
-## 4.2 Drag & Drop
-Unterstützt, wenn `tkinterdnd2` installiert ist.
-
-## 4.3 Dateien entfernen
-Doppelklick auf eine Zeile entfernt die Datei.
-
-## 4.4 Liste leeren
-Button „Liste leeren“.
-
-## 4.5 Pfaddarstellung
-- Dateien im Arbeitsordner → `.\`  
-- Unterordner → `.\unterordner\`  
-- außerhalb → absoluter Pfad  
-
-## 4.6 Pfadlogik
-- automatische Normalisierung  
-- keine `.\.\`‑Artefakte  
-- stabile Darstellung auch bei Netzwerkpfaden  
+- **Aktueller Arbeitsordner** (oben): zeigt das Verzeichnis, in dem die EXE ausgeführt wird  
+- **Dateiliste** (Mitte): enthält alle HTML‑Dateien, die zur Konvertierung ausgewählt wurden  
+- **Steuerbuttons** (oben links): Dateien hinzufügen, Ausgabeordner wählen, Liste leeren usw.  
+- **Statuszeile** (unten): zeigt Anzahl der Dateien und den aktuellen Status  
+- **Konvertieren / Abbrechen** (unten rechts)
 
 ---
 
-# 5. Ausgabeoptionen
+## HTML‑Dateien hinzufügen
 
-## 5.1 Ausgabeordner wählen
-Der Zielordner kann frei gewählt werden.
+Klicken Sie auf:
 
-## 5.2 Automatische PDF‑Benennung
-PDF‑Name = HTML‑Basename + `.pdf`.
+**„HTML‑Dateien hinzufügen“**
 
-## 5.3 Verhalten bei bestehenden Dateien
-PDFs werden ohne Rückfrage überschrieben.
+Es öffnet sich ein Dateidialog, über den eine oder mehrere HTML‑Dateien ausgewählt werden können.  
+Nach der Auswahl erscheinen die Dateien in der Tabelle mit folgenden Spalten:
 
-## 5.4 Erstellen fehlender Ordner
-Fehlende Ausgabeordner werden automatisch erzeugt.
+- **HTML‑Datei**  
+- **HTML‑Ordner**  
+- **PDF‑Datei** (wird automatisch vorgeschlagen)  
+- **PDF‑Ordner**  
+- **Status**
 
----
-
-# 6. Konvertierungsvorgang
-
-## 6.1 Start der Konvertierung
-Über den Button **Konvertieren**.
-
-## 6.2 Live‑Status
-stderr‑Ausgabe von wkhtmltopdf wird live angezeigt.
-
-## 6.3 Fortschrittsbalken
-Ruhige Animation, unabhängig von Dateigröße.
-
-## 6.4 Abbrechen
-Der Abbrechen‑Button stoppt die Konvertierung sofort.
-
-## 6.5 Verhalten bei Fehlern
-- Fehlerdialog mit erster stderr‑Zeile  
-- Status in der Tabelle wird aktualisiert  
-
-## 6.6 Performance‑Hinweise
-- GUI bleibt auch bei tausenden Dateien reaktionsfähig  
-- Statusupdates sind gedrosselt  
+Alternativ können Dateien auch per **Drag & Drop** in das Fenster gezogen werden.
 
 ---
 
-# 7. Protokollierung (GUI)
+## Ausgabeordner festlegen
 
-## 7.1 Aktivieren der Protokollierung
-Checkbox „Protokollierung aktivieren“.
+Der vorgeschlagene Ausgabeordner kann geändert werden. Klicken Sie auf:
 
-## 7.2 Auswahl einer Logdatei
-Über Dateidialog möglich.
+**„Ausgabeordner wählen“**
 
-## 7.3 Automatische Logdatei‑Erzeugung
-Wenn kein Logdateiname gesetzt ist:
+Wählen Sie das Zielverzeichnis, in dem die erzeugten PDF‑Dateien gespeichert werden sollen.  
+Der gewählte Ordner wird für alle Dateien übernommen.
 
-### 7.3.1 Ordner der ersten HTML‑Datei  
-→ wenn Dateien in der Liste stehen
+---
 
-### 7.3.2 Fallback: aktueller Arbeitsordner  
-→ wenn die Liste leer ist
+## Weitere Funktionen und Schalter
 
-### 7.3.3 Still, ohne Dialoge  
-→ keine Unterbrechung des Workflows
+Die folgenden Funktionen stehen zur Verfügung:
 
-## 7.4 Inhalt der Logdatei
+- **„Ausgewählte entfernen“**  
+  Entfernt markierte Dateien aus der Liste.
+
+- **„Liste leeren“**  
+  Entfernt alle Dateien aus der Liste.
+
+- **„INFO“**
+  Zeigt Versionsinformationen und Hinweise zur Anwendung.
+
+- **„Beenden“**
+  Schließt die Anwendung.
+
+---
+
+## Konvertierung starten
+
+Sobald mindestens eine Datei in der Liste steht, kann die Konvertierung gestartet werden:
+
+**„Konvertieren“**
+
+Während der Verarbeitung zeigt die Spalte **Status** den Fortschritt an:
+
+- „Wird konvertiert …“  
+- „Erfolgreich“  
+- „Fehler“ (falls die Datei nicht verarbeitet werden konnte)
+
+Die Konvertierung kann jederzeit abgebrochen werden. Die bis zu diesem Zeitpunkt fertig gestellten pdf-Dateien können verwendet werden. Die pdf-Datei bei der abgebrochen wurde ist jedoch nicht verwendbar und muss gelöscht werden.
+
+Nach Abschluss aller Vorgänge erscheint in der Statuszeile:
+
+**„Bereit.“**
+
+---
+
+## Sitzung beenden
+
+Nach erfolgreicher Konvertierung können Sie:
+
+- weitere Dateien hinzufügen  
+- die Liste leeren  
+- oder die Anwendung über **„Beenden“** schließen
+
+
+# Performance‑Hinweise
+Das Programm bleibt auch bei tausenden Dateien reaktionsfähig, das heißt ein Abbruch ist jederzeit möglich.  
+
+---
+
+# Protokollierung 
+
+Der Vorgang kann protokolliert werden. Pfad und Dateiname der Protokolldatei wird angezeigt.
+Folgende Daten werden protokolliert:
 - Datum  
 - HTML‑Pfad  
 - PDF‑Pfad  
 - Status  
 - Zusammenfassung  
 
-## 7.5 Speicherort & Format
-- Textdatei (`.txt`)  
-- UTF‑8  
+Nach der Konvertierung wird die Protokolldatei zur Ansicht angeboten.
 
 ---
 
-# 8. Protokollanzeige
+# Kommandozeilen‑Modus (CLI)
 
-## 8.1 Öffnen der Protokollanzeige
-Nach der Konvertierung über den Button „Protokoll anzeigen“.
-
-## 8.2 Aufbau des Fensters
-- Monospace‑Textfeld  
-- Scrollbar  
-- App‑Icon  
-
-## 8.3 Funktionen
-
-### 8.3.1 📝 Protokoll öffnen  
-Öffnet die Logdatei im Standardeditor (`os.startfile()`).
-
-### 8.3.2 📂 Ordner öffnen  
-Öffnet den Explorer und markiert die Logdatei:
-
-```
-explorer /select,"<pfad>"
-```
-
-### 8.3.3 ❎ Schließen  
-Schließt das Fenster.
-
-## 8.4 Explorer‑Integration
-Robust auch bei langen Pfaden, Leerzeichen und UNC‑Pfaden.
-
-## 8.5 Typische Fehler & Lösungen
-- Datei existiert nicht → Logdatei wurde gelöscht  
-- Explorer öffnet nicht → Pfad enthält ungültige Zeichen  
-
----
-
-# 9. Kommandozeilen‑Modus (CLI)
-
-## 9.1 Aufruf
+![alt text](Screenshot_CLI.png)
 
 ```bash
 html2pdf --input input.html --output out/
 ```
 
-## 9.2 Parameterübersicht
+## Parameterübersicht
 
 ```
 --input <datei/ordner>
@@ -247,89 +215,51 @@ html2pdf --input input.html --output out/
 --log <optional: logfile>
 ```
 
-## 9.3 Beispiele
+## Beispiele
 
 ```bash
 html2pdf -i *.html -o out/
 ```
 
-## 9.4 Silent‑Mode
+## Silent‑Mode
 - keine Ausgabe  
 - kein Fortschritt  
 - kein Logging  
 
-## 9.5 Logging im CLI
-Optional über `--log`.
-
-## 9.6 Unterschiede zur GUI
-- keine Live‑Statusanzeige  
-- keine Protokollanzeige  
+## Logging im CLI
+Optional über `--log` oder `--logappend`.
 
 ---
 
-# 10. Fehlerbehebung (Troubleshooting)
+# Fehlerbehebung (Troubleshooting)
 
-## 10.1 wkhtmltopdf nicht gefunden
-→ interne Engine wird automatisch genutzt.
+Fehler können unterschiedliche Ursachen haben. Das Programm analysiert die Fehler nicht und meldet nur, dass die Konvertierung nicht erfolgreich war.
 
-## 10.2 Keine Schreibrechte
-→ Ausgabeordner ändern.
-
-## 10.3 Fehlerhafte HTML‑Dateien
-→ Browser‑Vorschau testen.
-
-## 10.4 Netzwerkpfade / UNC‑Pfade
-→ Explorer‑Integration funktioniert, aber Schreibrechte prüfen.
-
-## 10.5 Logdatei kann nicht geöffnet werden
-→ Datei existiert? Pfad korrekt?
-
-## 10.6 Explorer öffnet nicht
-→ Sonderzeichen im Pfad entfernen.
+Folgendes ist zu beachten und im Fehlerfall zu prüfen:
+- Der Ausgabeordner muss vorhanden sein.
+- Das Programm muss Schreibrechte in diesem Ordner haben.
+- Eine vorhandene pdf-Datei (z.B. aus einer vorangegangenen Konvertierung erzeugt) wird überschrieben, daher darf diese Datei nicht geöffnet oder schreibgeschützt sein.
+- **wkhtmltopdf** ist bei der Vearbeitung von html-Dateien fehlertollerant. Es kann jedoch trotzdem zu Konvertierungsfehler führen.
 
 ---
 
-# 11. Tipps & Best Practices
+## Lizenztexte 
+**html2pdf**  steht unter der MIT‑Lizenz, d.h. Sie können das Programm frei verwenden, 
 
-## 11.1 Strukturierung großer HTML‑Sammlungen
-Ordnerstruktur nutzen.
+**wkhtmltopdf** wird unter der **LGPL‑3.0‑Lizenz** bereitgestellt.  
+Für Anwender bedeutet das im Wesentlichen:
 
-## 11.2 Optimale Ausgabeordner
-Pro Projekt ein eigener Ordner.
+- **Die Nutzung ist kostenlos**, sowohl privat als auch kommerziell.  
+- *html2pdf* darf *wkhtmltopdf* **mitliefern und verwenden**, ohne dass der Anwender etwas beachten muss.  
+- Die Lizenz verlangt lediglich, dass  
+  - der Hinweis auf die Verwendung von *wkhtmltopdf* erhalten bleibt,  
+  - die LGPL‑Lizenz im Projekt enthalten ist,  
+  - und dass Änderungen an *wkhtmltopdf* (falls vorgenommen) wieder unter LGPL veröffentlicht würden.  
+- Die eigene Software (*html2pdf*) muss **nicht** unter LGPL stehen und bleibt vollständig unter der gewählten Projektlizenz.
 
-## 11.3 Umgang mit sehr großen Dateien
-Protokollierung aktivieren.
+Kurz gesagt:  
+**wkhtmltopdf darf frei genutzt und weitergegeben werden; die Lizenz betrifft nur die Bibliothek selbst, nicht das umgebende Programm.**
 
-## 11.4 Nutzung der Protokollierung
-Ideal zur Fehlersuche.
-
----
-
-# 12. Anhang
-
-## 12.1 Versionshistorie
-Siehe CHANGELOG.md.
-
-## 12.2 Projektstruktur
-
-```
-html2pdf/
- ├── core/
- ├── gui/
- ├── cli/
- ├── assets/
- ├── bin/
- └── version.py
-```
-
-## 12.3 Lizenztexte
-MIT‑Lizenz, LGPL‑3.0 für wkhtmltopdf.
 
 ## 12.4 Kontakt / Support
 (c) 2026 Dieter Eckstein
-
-Wenn du möchtest, kann ich dir jetzt:
-
-- eine **PDF‑Version** des Handbuchs generieren (als Markdown‑Text, nicht als Datei)  
-- eine **Kurzversion** für Endanwender erstellen  
-- oder das Handbuch in **mehrere Dateien** aufteilen (z. B. `/docs/`)
