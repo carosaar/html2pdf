@@ -13,6 +13,12 @@ Das Projekt bietet:
 ## [Benutzerhandbuch](HANDBUCH.pdf)
 
 ---
+## Direktnutzung
+Unter den Releases ist eine lauffähige Windows-Exe-Datei hinterlegt, die heruntergeladen und ausgeführt werden kann.
+Möglicherweise weist Windows auf Sicherheitsbedenken hin und verhindert die Ausführung. Wenn Sie der Anwendung trauen
+können Sie die Exe trotzdem ausführen. Sie können aber auch ihre eigene EXE aus dem Quellcode des Repository erstellen.
+
+Dazu sollten Sie das Repo klonen und den nachfolgenden Anleitungen folgen:
 
 ## 📦 Installation nach dem Klonen
 
