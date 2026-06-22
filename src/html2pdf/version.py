@@ -1,6 +1,8 @@
 """
+
 Zentrale Versionsdatei für html2pdf.
 Diese Datei wird von GUI, CLI und Setup verwendet.
+
 """
 
 __version__ = "1.0.0"
