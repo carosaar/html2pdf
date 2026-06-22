@@ -46,16 +46,19 @@ Thumbs.db
 # Project-specific
 # (falls du später weitere statische Assets ignorieren willst)
 src/html2pdf/docs/*.pdf
+
 src/html2pdf/docs/*.html
 Testdata/*
 devdoc/*
 *.txt
 !LISENSES/*.txt
+!HANDBUCH.pdf
 
 # Tests / Coverage
 .coverage
 htmlcov/
 .cache/
 pytest_cache/
-*.pdf
+
 bumpBersion.bat
+src/html2pdf/docs/HANDBUCH.odt

@@ -1,31 +1,28 @@
-# 🟦 **HANDBUCH – html2pdf**
+<h1> 🟦 HANDBUCH – html2pdf </h1>
 
-## 📑 **Inhaltsverzeichnis**
+---
 
-- [🟦 **HANDBUCH – html2pdf**](#-handbuch--html2pdf)
-  - [📑 **Inhaltsverzeichnis**](#-inhaltsverzeichnis)
+<h2>Inhaltsverzeichnis</h2>
+
 - [1. Einleitung](#1-einleitung)
-  - [Zielgruppe:](#zielgruppe)
 - [2. Installation \& Start](#2-installation--start)
-  - [✨ Bezugsquelle](#-bezugsquelle)
-  - [2.3 Programmstart](#23-programmstart)
-- [3. Überblick über die Benutzeroberfläche (GUI)](#3-überblick-über-die-benutzeroberfläche-gui)
+  - [Bezugsquelle](#bezugsquelle)
+  - [Programmstart](#programmstart)
+- [3. Überblick über die GUI](#3-überblick-über-die-gui)
   - [Start der Anwendung](#start-der-anwendung)
   - [HTML‑Dateien hinzufügen](#htmldateien-hinzufügen)
   - [Ausgabeordner festlegen](#ausgabeordner-festlegen)
   - [Weitere Funktionen und Schalter](#weitere-funktionen-und-schalter)
   - [Konvertierung starten](#konvertierung-starten)
   - [Sitzung beenden](#sitzung-beenden)
-- [Performance‑Hinweise](#performancehinweise)
-- [Protokollierung](#protokollierung)
-- [Kommandozeilen‑Modus (CLI)](#kommandozeilenmodus-cli)
+  - [Performance‑Hinweise](#performancehinweise)
+  - [Protokollierung](#protokollierung)
+- [4. Kommandozeilen‑Modus (CLI)](#4-kommandozeilenmodus-cli)
   - [Parameterübersicht](#parameterübersicht)
   - [Beispiele](#beispiele)
   - [Silent‑Mode](#silentmode)
-  - [Logging im CLI](#logging-im-cli)
-- [Fehlerbehebung (Troubleshooting)](#fehlerbehebung-troubleshooting)
-  - [Lizenztexte](#lizenztexte)
-  - [12.4 Kontakt / Support](#124-kontakt--support)
+- [5. Fehlerbehebung (Troubleshooting)](#5-fehlerbehebung-troubleshooting)
+- [6. Lizenztexte](#6-lizenztexte)
 
 ---
 
@@ -39,7 +36,7 @@ Es bietet:
 - eine **eingebettete portable wkhtmltopdf‑Engine**  
 - keine Installation, keine Administratorrechte  
 
-## Zielgruppe:
+**Zielgruppe**
 Anwender, die HTML‑Dateien schnell, zuverlässig und ohne Konfigurationsaufwand in PDF umwandeln möchten.
 
 **Systemvoraussetzungen:**  
@@ -52,7 +49,7 @@ Anwender, die HTML‑Dateien schnell, zuverlässig und ohne Konfigurationsaufwan
 # 2. Installation & Start
 
 
-## ✨ Bezugsquelle
+## Bezugsquelle
 
 Unter **[https://github.com/carosaar/html2pdf](https://github.com/carosaar/html2pdf) – Releases** steht eine sofort lauffähige Windows‑Version (`html2pdf.exe`) zur Verfügung.
 
@@ -67,30 +64,31 @@ git clone https://github.com/carosaar/html2pdf.git
 Anschließend lässt sich die EXE gemäß den Hinweisen in der [README.md](../../../README.md) selbst erzeugen.  
 Die Erstellung lauffähiger Versionen für andere Betriebssysteme wurde bislang weder vorbereitet noch getestet, sollte grundsätzlich aber möglich sein.
 
-## 2.3 Programmstart
+## Programmstart
 
 ```bash
 html2pdf
 ```
-startet die grafische Oberfläche.
+startet die grafische Oberfläche (GUI).
 
-Das Programm kann jedoch auch auf der Kommandozeile der Konsole oder in batchprogrammen genutzt werden. Dazu werden die zu konvertierende/n Datei/n als Parameter übergeben. Dazu ist die Syntax zu beachten, die über `html2pdf --help` angezeigt wird:
+Das Programm kann jedoch auch auf der Kommandozeile der Konsole (CLI) oder in einem Batchprogrammen genutzt werden. Dazu werden die zu konvertierende/n Datei/n als Parameter übergeben. Beachten Sie dazu die Syntax, die über `html2pdf --help` angezeigt wird:
+
 ![alt text](Screenshot_CLI.png)
 
 
 ---
 
-# 3. Überblick über die Benutzeroberfläche (GUI)
-
-![alt text](Screenshot_GUI.png)
+# 3. Überblick über die GUI
 
 ## Start der Anwendung
 
-Die GUI wird über die ausführbare Datei gestartet:
+Die GUI wird über die ausführbare Datei gestartet (in der Konsole oder Doppelklick auf die exe-Datei):
 
 ```
 html2pdf.exe
 ```
+
+![alt text](Screenshot_GUI.png)
 
 Nach dem Start erscheint das Hauptfenster mit folgenden Bereichen:
 
@@ -179,12 +177,12 @@ Nach erfolgreicher Konvertierung können Sie:
 - oder die Anwendung über **„Beenden“** schließen
 
 
-# Performance‑Hinweise
+## Performance‑Hinweise
 Das Programm bleibt auch bei tausenden Dateien reaktionsfähig, das heißt ein Abbruch ist jederzeit möglich.  
 
 ---
 
-# Protokollierung 
+## Protokollierung 
 
 Der Vorgang kann protokolliert werden. Pfad und Dateiname der Protokolldatei wird angezeigt.
 Folgende Daten werden protokolliert:
@@ -198,42 +196,31 @@ Nach der Konvertierung wird die Protokolldatei zur Ansicht angeboten.
 
 ---
 
-# Kommandozeilen‑Modus (CLI)
-
-![alt text](Screenshot_CLI.png)
+# 4. Kommandozeilen‑Modus (CLI)
 
 ```bash
 html2pdf --input input.html --output out/
 ```
 
 ## Parameterübersicht
-
-```
---input <datei/ordner>
---output <ordner>
---silent
---log <optional: logfile>
-```
+![alt text](Screenshot_CLI.png)
 
 ## Beispiele
 
 ```bash
 html2pdf -i *.html -o out/
 ```
+-> alle html-Dateien des aktuelle Ordners werden in den Unterordner ./out geschrieben, kein Logging 
+
 
 ## Silent‑Mode
-- keine Ausgabe  
-- kein Fortschritt  
-- kein Logging  
-
-## Logging im CLI
-Optional über `--log` oder `--logappend`.
+Im Silent-Modus erfolgt keine Ausgabe  und kein Logging.
 
 ---
 
-# Fehlerbehebung (Troubleshooting)
+# 5. Fehlerbehebung (Troubleshooting)
 
-Fehler können unterschiedliche Ursachen haben. Das Programm analysiert die Fehler nicht und meldet nur, dass die Konvertierung nicht erfolgreich war.
+Wenn bei der Konvertierung Fehler auftreten können unterschiedliche Ursachen vorliegen. Das Programm analysiert die Fehler nicht und meldet nur, dass die Konvertierung nicht erfolgreich war.
 
 Folgendes ist zu beachten und im Fehlerfall zu prüfen:
 - Der Ausgabeordner muss vorhanden sein.
@@ -243,7 +230,7 @@ Folgendes ist zu beachten und im Fehlerfall zu prüfen:
 
 ---
 
-## Lizenztexte 
+# 6. Lizenztexte 
 **html2pdf**  steht unter der MIT‑Lizenz, d.h. Sie können das Programm frei verwenden, 
 
 **wkhtmltopdf** wird unter der **LGPL‑3.0‑Lizenz** bereitgestellt.  
@@ -261,5 +248,7 @@ Kurz gesagt:
 **wkhtmltopdf darf frei genutzt und weitergegeben werden; die Lizenz betrifft nur die Bibliothek selbst, nicht das umgebende Programm.**
 
 
-## 12.4 Kontakt / Support
-(c) 2026 Dieter Eckstein
+<h1>Kontakt / Support</h1>
+(c) 2026 Dieter Eckstein 
+
+carosaar@online.de

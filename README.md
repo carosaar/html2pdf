@@ -10,7 +10,7 @@ Das Projekt bietet:
 - eine portable **Windows‑EXE** (PyInstaller)
 - eingebettete `wkhtmltopdf`‑Binaries für Offline‑Nutzung
 
-## Das Benutzerhandbuch [findet sich unter src/html2pdf/docs](src/html2pdf/docs/HANDBUCH.md)
+## [Benutzerhandbuch](HANDBUCH.pdf)
 
 ---
 
